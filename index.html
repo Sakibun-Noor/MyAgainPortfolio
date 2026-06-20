@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sakibun Noor — Full-Stack Web Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<style>
+  html, body { margin:0; padding:0; background:#0c0c0e; font-family:'Bricolage Grotesque', system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  body::-webkit-scrollbar { width: 0; }
+
+  :root, body {
+    --bg: #0c0c0e; --bg-alt: #16161a; --text: #f3efe7;
+    --text-sub: rgba(243,239,231,0.78); --text-dim: rgba(243,239,231,0.55);
+    --text-faint: rgba(243,239,231,0.35); --accent: #4d7cff;
+    --border: rgba(243,239,231,0.1); --border-strong: rgba(243,239,231,0.15);
+    --nav-bg: rgba(16,16,20,0.72); --nav-border: rgba(243,239,231,0.12);
+    --btn-bg: #f3efe7; --btn-text: #0c0c0e;
+    --hero-scrim-1: linear-gradient(100deg, rgba(12,12,14,0.86) 0%, rgba(12,12,14,0.50) 34%, rgba(12,12,14,0.12) 62%, rgba(12,12,14,0.32) 100%);
+    --hero-scrim-2: linear-gradient(to top, rgba(12,12,14,0.92) 0%, rgba(12,12,14,0.08) 42%, transparent 68%);
+    --dot-glow: 0 0 10px #7ee7a0;
+  }
+  [data-theme="light"] {
+    --bg: #ece7dd; --bg-alt: #e3ded4; --text: #1a1a1a;
+    --text-sub: rgba(26,26,26,0.72); --text-dim: rgba(26,26,26,0.50);
+    --text-faint: rgba(26,26,26,0.30); --accent: #4d7cff;
+    --border: rgba(26,26,26,0.1); --border-strong: rgba(26,26,26,0.15);
+    --nav-bg: rgba(245,241,234,0.88); --nav-border: rgba(26,26,26,0.10);
+    --btn-bg: #1a1a1a; --btn-text: #ece7dd;
+    --hero-scrim-1: linear-gradient(100deg, rgba(236,231,221,0.90) 0%, rgba(236,231,221,0.65) 34%, rgba(236,231,221,0.30) 62%, rgba(236,231,221,0.55) 100%);
+    --hero-scrim-2: linear-gradient(to top, rgba(236,231,221,0.95) 0%, rgba(236,231,221,0.25) 42%, transparent 68%);
+    --dot-glow: 0 0 10px #3dae62;
+  }
+
+  ::selection { background:#4d7cff; color:#fff; }
+  html.lenis, html.lenis body { height:auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: clip; }
+
+  [data-reveal], [data-reveal-stagger] > * { opacity:1; }
+  @supports (animation-timeline: view()) {
+    [data-reveal] { animation: revealIn linear both; animation-timeline: view(); animation-range: entry 0% cover 18%; }
+    [data-reveal-stagger] > * { animation: revealIn linear both; animation-timeline: view(); animation-range: entry 0% cover 22%; }
+    [data-reveal-stagger] > *:nth-child(1) { animation-range: entry 0% cover 12%; }
+    [data-reveal-stagger] > *:nth-child(2) { animation-range: entry 2% cover 16%; }
+    [data-reveal-stagger] > *:nth-child(3) { animation-range: entry 4% cover 20%; }
+    [data-reveal-stagger] > *:nth-child(4) { animation-range: entry 6% cover 24%; }
+    [data-reveal-stagger] > *:nth-child(5) { animation-range: entry 8% cover 28%; }
+    [data-reveal-stagger] > *:nth-child(6) { animation-range: entry 10% cover 32%; }
+  }
+  @keyframes revealIn { from { opacity:0; transform: translateY(28px); } to { opacity:1; transform: none; } }
+  @keyframes marqueeX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+
+  @media (max-width: 1024px) {
+    .bg-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+    .bg-sidebar { position: relative !important; top: 0 !important; }
+    .portfolio-row { grid-template-columns: 60px 1fr !important; gap: 24px !important; }
+    .portfolio-row .portfolio-desc, .portfolio-row .portfolio-metric { display: none; }
+    .toolkit-grid { grid-template-columns: 1fr 1fr !important; }
+    .contact-grid { grid-template-columns: 1fr !important; }
+    .planning-grid { grid-template-columns: 1fr !important; }
+    .header-right { display: none !important; }
+    .header-left .header-name { display: none !important; }
+  }
+  @media (max-width: 600px) {
+    .toolkit-grid { grid-template-columns: 1fr !important; }
+    .portfolio-header { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root" style="background:var(--bg); color:var(--text); position:relative; overflow:hidden; min-height:100vh; transition: background-color 0.4s ease, color 0.4s ease;">
+
+<!-- FILM GRAIN OVERLAY -->
+<svg style="position:fixed; inset:0; width:100vw; height:100vh; z-index:9999; pointer-events:none; opacity:0.035;" preserveAspectRatio="none">
+  <filter id="grain-filter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#grain-filter)"/>
+</svg>
+
+<!-- HEADER -->
+<header style="position:fixed; top:0; left:0; right:0; z-index:80; padding:24px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div class="header-left" style="display:flex; align-items:center; gap:14px;">
+    <div style="width:36px; height:36px; border:1px solid var(--text); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Instrument Serif', serif; font-style:italic; font-size:20px; color:var(--text); transition: border-color 0.4s ease, color 0.4s ease;">s</div>
+    <div class="header-name" style="font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text); line-height:1.3; transition: color 0.4s ease;">
+      <div>Sakibun Noor</div>
+      <div style="opacity:.55;">Full-Stack / DHK</div>
+    </div>
+  </div>
+  <div class="header-right" style="font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text); display:flex; gap:28px; align-items:center; transition: color 0.4s ease;">
+    <span id="theme-toggle" style="cursor:pointer; display:inline-flex; gap:6px; align-items:center; padding:6px 14px; border:1px solid var(--border); border-radius:999px; transition: border-color 0.4s ease;">
+      <span id="day-label" style="opacity:0.4; transition: opacity 0.3s ease;">Day</span>
+      <span style="opacity:0.35;">/</span>
+      <span id="night-label" style="opacity:1; transition: opacity 0.3s ease;">Night</span>
+    </span>
+    <span style="display:inline-flex; align-items:center; gap:8px;"><span style="width:6px; height:6px; border-radius:50%; background:#7ee7a0; display:inline-block; box-shadow:var(--dot-glow);"></span>Available · 2026</span>
+    <span id="header-clock"></span>
+  </div>
+</header>
+
+<!-- SIDE NAV -->
+<nav id="side-nav" style="position:fixed; top:50%; left:24px; transform:translateY(-50%) translateX(-24px); opacity:0; pointer-events:none; z-index:70; background:var(--nav-bg); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid var(--nav-border); border-radius:14px; padding:18px 16px; display:flex; flex-direction:column; gap:14px; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; box-shadow:0 20px 40px -10px rgba(0,0,0,0.25); transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.2,1), background-color 0.4s ease, border-color 0.4s ease;">
+</nav>
+
+<!-- SCROLL PROGRESS RAIL -->
+<div style="position:fixed; top:0; right:0; bottom:0; width:1px; background:var(--border); z-index:60;">
+  <div id="scroll-bar" style="position:absolute; top:0; left:0; right:0; height:0%; background:linear-gradient(to bottom, transparent, var(--accent)); transition: height .15s linear;"></div>
+</div>
+
+<!-- HERO -->
+<section id="intro" style="position:relative; height:100vh;">
+  <div style="position:absolute; inset:0; z-index:0; overflow:hidden;">
+    <video src="uploads/Video Object Remover-1781893997281.webm" autoplay loop muted playsinline aria-hidden="true" style="width:100%; height:100%; object-fit:cover; object-position:center; filter:contrast(1.04) saturate(0.95) brightness(0.92);"></video>
+  </div>
+  <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:var(--hero-scrim-1); transition:background 0.5s ease;"></div>
+  <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:var(--hero-scrim-2); transition:background 0.5s ease;"></div>
+
+  <div style="position:absolute; left:8vw; right:8vw; bottom:14vh; z-index:3; max-width:900px;">
+    <h1 style="margin:0 0 20px; font-family:'Bricolage Grotesque', sans-serif; font-weight:600; font-stretch:80%; font-size:clamp(64px, 10vw, 160px); line-height:.88; letter-spacing:-0.04em; color:var(--text); transition:color 0.4s ease;">
+      Sakibun<br>Noor<span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:var(--accent);">.</span>
+    </h1>
+    <div style="font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-dim); margin-bottom:24px; transition:color 0.4s ease;">Full-Stack Web Developer</div>
+    <p style="margin:0 0 36px; font-family:'Bricolage Grotesque', sans-serif; font-weight:400; font-size:clamp(15px, 1.2vw, 20px); line-height:1.55; color:var(--text-sub); max-width:520px; transition:color 0.4s ease;">I build for the web — end to end. React up top, Laravel or Node underneath. Five years, a hundred-plus projects, and still shipping.</p>
+    <a href="#contact" class="js-scroll-contact" style="display:inline-flex; align-items:center; gap:10px; background:var(--btn-bg); color:var(--btn-text); padding:14px 28px; border-radius:999px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer; transition:background-color 0.4s ease, color 0.4s ease;">
+      Get in touch <span style="font-size:16px;">→</span>
+    </a>
+  </div>
+
+  <div style="position:absolute; bottom:36px; right:8vw; z-index:3; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:14px;">
+    <span>Scroll</span>
+    <span style="width:1px; height:48px; background:linear-gradient(to bottom, var(--text-dim), transparent);"></span>
+  </div>
+</section>
+
+<!-- BACKGROUND -->
+<section id="background" style="padding:160px 8vw; max-width:1600px; margin:0 auto;">
+  <div data-reveal style="display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:48px;">
+    <span style="width:24px; height:1px; background:var(--accent);"></span>
+    <span>01 — Background &amp; Working Style</span>
+  </div>
+
+  <div class="bg-grid" style="display:grid; grid-template-columns:1.4fr 1fr; gap:96px; align-items:start;">
+    <div data-reveal-stagger>
+      <h2 style="margin:0 0 6px; font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(40px, 4.4vw, 72px); font-weight:500; font-stretch:85%; letter-spacing:-0.03em; line-height:1; color:var(--text);">Sakibun Noor</h2>
+      <div style="font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:36px;">Full-Stack Web Developer</div>
+
+      <p style="margin:0 0 20px; font-size:18px; line-height:1.6; color:var(--text-sub); max-width:600px;">I build the interfaces people depend on — admin dashboards, e-commerce platforms, SaaS products — with React up top, Laravel or Node underneath, and a focus on what actually ships to production.</p>
+      <p style="margin:0 0 20px; font-size:18px; line-height:1.6; color:var(--text-sub); max-width:600px;">Over 100 projects completed with 98% client satisfaction. Maintained Top-Rated on Upwork since 2021. Led a four-person dev team at SMS Solutions, cutting delivery cycles by 30% and reducing bug-escape rates through focused mentoring.</p>
+      <p style="margin:0 0 48px; font-size:18px; line-height:1.6; color:var(--text-sub); max-width:600px;">I do my best work when I can own the whole stack: write the spec, build the components, wire the API, push the migration through, and care about the sub-2s load times that users actually notice.</p>
+
+      <div style="margin-bottom:48px;">
+        <div style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:20px;">Through the years</div>
+        <div id="timeline-container" style="display:flex; flex-direction:column; gap:0;"></div>
+      </div>
+
+      <a href="#contact" class="js-scroll-contact" style="display:inline-flex; align-items:center; gap:10px; background:var(--btn-bg); color:var(--btn-text); padding:14px 28px; border-radius:999px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer; transition:background-color 0.4s ease, color 0.4s ease;">
+        Get in touch <span style="font-size:16px;">→</span>
+      </a>
+    </div>
+
+    <div data-reveal class="bg-sidebar" style="position:sticky; top:120px;">
+      <img id="portrait" src="uploads/sakib-portrait.jpeg" alt="Sakibun Noor portrait" style="width:100%; max-width:420px; aspect-ratio:3/4; object-fit:cover; object-position:center top; margin-bottom:36px; filter:grayscale(0.15) contrast(1.05); transition:filter 0.4s ease;"/>
+      <div style="border-top:1px solid var(--border); padding-top:24px;">
+        <div style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:18px;">Vitals</div>
+        <div id="vitals-container" style="display:flex; flex-direction:column; gap:16px;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANNING -->
+<section id="planning" style="padding:80px 8vw 160px; max-width:1600px; margin:0 auto;">
+  <div data-reveal style="margin-bottom:48px;">
+    <div style="display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:24px;">
+      <span style="width:24px; height:1px; background:var(--accent);"></span>
+      <span>02 — How I Think &amp; Build</span>
+    </div>
+    <h2 style="margin:0 0 16px; font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(48px, 6vw, 104px); font-weight:600; font-stretch:80%; letter-spacing:-0.035em; line-height:.92;">Two studies in<br><span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:var(--accent);">craft &amp; code</span>.</h2>
+    <p style="margin:0; font-family:'Instrument Serif', serif; font-style:italic; font-size:clamp(16px, 1.4vw, 22px); line-height:1.5; color:var(--text-sub); max-width:560px;">These visual studies illustrate two sides of how I approach every project — the upfront architecture and the momentum of shipping.</p>
+  </div>
+
+  <div id="planning-container" data-reveal-stagger class="planning-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:48px;"></div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" style="padding:80px 8vw 160px; max-width:1600px; margin:0 auto;">
+  <div data-reveal class="portfolio-header" style="display:flex; justify-content:space-between; align-items:end; margin-bottom:80px; border-bottom:1px solid var(--border); padding-bottom:32px;">
+    <div>
+      <div style="display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:24px;">
+        <span style="width:24px; height:1px; background:var(--accent);"></span>
+        <span>03 — Portfolio</span>
+      </div>
+      <h2 style="margin:0; font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(48px, 6vw, 104px); font-weight:600; font-stretch:80%; letter-spacing:-0.035em; line-height:.92;">Things I've <span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:var(--accent);">shipped</span>.</h2>
+    </div>
+    <div style="font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-dim);">
+      <div>100+ delivered</div>
+      <div>98% satisfaction</div>
+    </div>
+  </div>
+
+  <div id="projects-container" data-reveal-stagger style="display:flex; flex-direction:column; gap:0;"></div>
+</section>
+
+<!-- TOOLKIT -->
+<section id="toolkit" style="padding:80px 8vw 160px; max-width:1600px; margin:0 auto;">
+  <div data-reveal style="margin-bottom:80px;">
+    <div style="display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:24px;">
+      <span style="width:24px; height:1px; background:var(--accent);"></span>
+      <span>04 — Toolkit</span>
+    </div>
+    <h2 style="margin:0; font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(48px, 6vw, 104px); font-weight:600; font-stretch:80%; letter-spacing:-0.035em; line-height:.92;">What I reach for, <span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:var(--accent);">daily</span>.</h2>
+  </div>
+
+  <div id="skills-container" class="toolkit-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border); border:1px solid var(--border);"></div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="padding:80px 8vw 80px; max-width:1600px; margin:0 auto;">
+  <div data-reveal style="margin-bottom:64px;">
+    <div style="display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:32px;">
+      <span style="width:24px; height:1px; background:var(--accent);"></span>
+      <span>05 — Contact</span>
+    </div>
+    <h2 style="margin:0; font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(80px, 12vw, 220px); font-weight:600; font-stretch:75%; letter-spacing:-0.045em; line-height:.88;">
+      Let's build<br>
+      <span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:var(--accent);">something</span> good.
+    </h2>
+  </div>
+
+  <div class="contact-grid" style="display:grid; grid-template-columns:1.4fr 1fr; gap:64px; align-items:start; padding-top:48px; border-top:1px solid var(--border);">
+    <div data-reveal-stagger>
+      <p style="margin:0 0 40px; font-family:'Bricolage Grotesque', sans-serif; font-size:22px; line-height:1.5; color:var(--text-sub); max-width:580px;">Open to full-stack contract work, dev-team roles, or anything where someone needs an API stitched to an interface. Based in Dhaka, comfortable across timezones. Replies usually land within 24 hours.</p>
+      <div style="display:flex; flex-direction:column; gap:0;">
+        <a href="#" id="email-link" style="display:flex; justify-content:space-between; align-items:center; padding:28px 0; border-top:1px solid var(--border); cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:24px;">
+            <span style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">EMAIL</span>
+            <span style="font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(28px, 3vw, 44px); font-weight:500; letter-spacing:-0.02em; color:var(--text);">iamsakibdeveloper<span>&#64;</span>gmail.com</span>
+          </div>
+          <span style="font-family:'Instrument Serif', serif; font-style:italic; font-size:36px; color:var(--accent);">→</span>
+        </a>
+        <a href="https://github.com/Sakibun-Noor" target="_blank" rel="noopener" style="display:flex; justify-content:space-between; align-items:center; padding:28px 0; border-top:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:24px;">
+            <span style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">GITHUB</span>
+            <span style="font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(28px, 3vw, 44px); font-weight:500; letter-spacing:-0.02em; color:var(--text);">@Sakibun-Noor</span>
+          </div>
+          <span style="font-family:'Instrument Serif', serif; font-style:italic; font-size:36px; color:var(--accent);">↗</span>
+        </a>
+        <a href="https://www.linkedin.com/in/sakibun-jawad-noor/" target="_blank" rel="noopener" style="display:flex; justify-content:space-between; align-items:center; padding:28px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:24px;">
+            <span style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">LINKEDIN</span>
+            <span style="font-family:'Bricolage Grotesque', sans-serif; font-size:clamp(28px, 3vw, 44px); font-weight:500; letter-spacing:-0.02em; color:var(--text);">Sakibun Jawad Noor</span>
+          </div>
+          <span style="font-family:'Instrument Serif', serif; font-style:italic; font-size:36px; color:var(--accent);">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div data-reveal style="background:var(--bg-alt); padding:36px; border:1px solid var(--border); transition:background-color 0.4s ease, border-color 0.4s ease;">
+      <div style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:24px;">Direct line</div>
+      <div style="font-family:'Bricolage Grotesque', sans-serif; font-size:24px; font-weight:500; letter-spacing:-0.01em; margin-bottom:32px; color:var(--text);">+880 131 443 6871</div>
+      <div style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px;">Where</div>
+      <div style="font-family:'Bricolage Grotesque', sans-serif; font-size:17px; line-height:1.4; margin-bottom:32px; color:var(--text);">Uttara, Dhaka 1230<br><span style="color:var(--text-dim);">Bangladesh · GMT+6</span></div>
+      <div style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px;">Office hours</div>
+      <div style="font-family:'Bricolage Grotesque', sans-serif; font-size:17px; line-height:1.4; color:var(--text);">Sun – Thu · 10am – 8pm<br><span style="color:var(--text-dim);">Friday — code dump only</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:120px; padding-top:32px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">
+    <div>© Sakibun Noor · 2026</div>
+    <div>Hand-coded in Dhaka</div>
+    <div>v2.0 · <span id="footer-clock"></span></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function() {
+  const root = document.getElementById('root');
+  const nav = document.getElementById('side-nav');
+  const scrollBar = document.getElementById('scroll-bar');
+  const portrait = document.getElementById('portrait');
+  const dayLabel = document.getElementById('day-label');
+  const nightLabel = document.getElementById('night-label');
+  const headerClock = document.getElementById('header-clock');
+  const footerClock = document.getElementById('footer-clock');
+  const themeToggle = document.getElementById('theme-toggle');
+
+  let theme = 'dark';
+  let activeSection = 'intro';
+  let navOpen = false;
+  let lenis = null;
+
+  const sectionIds = ['intro','background','planning','portfolio','toolkit','contact'];
+
+  const timeline = [
+    { year: "'19", text: 'Started freelancing · Upwork, Fiverr' },
+    { year: "'21", text: 'Earned Top-Rated badge · Upwork' },
+    { year: "'22", text: 'Senior Web Developer · SMS Solutions' },
+    { year: "'23", text: 'B.Sc. Computer Science · North South University' },
+    { year: "'26", text: 'Present · Open for senior roles' },
+  ];
+
+  const vitals = [
+    { title: 'Full-Stack Developer', sub: 'Freelance · Upwork, Fiverr, Freelancer' },
+    { title: 'Senior Web Developer', sub: 'SMS Solutions · Jan 2022 – Dec 2023' },
+    { title: 'B.Sc. CS (Ongoing)', sub: 'North South University · Class of 2027' },
+    { title: 'Based in Uttara, Dhaka', sub: 'Bangladesh · GMT+6' },
+  ];
+
+  const planningItems = [
+    { num: 'A.01', title: 'Architecture First', body: "Every project starts with the question: what does this system look like at ten-times the current scale? I map out data flows, API contracts, and component hierarchies before writing the first line. The boring part — the schema design, the auth flow, the error-state matrix — is where most bugs are prevented, not fixed." },
+    { num: 'A.02', title: 'Ship, Then Iterate', body: "Perfection is a trap that kills delivery. I push to production early, instrument everything I can, and let real user behaviour guide the next round of decisions. The best code I've written was the code I deleted in week two because analytics proved a simpler path." },
+  ];
+
+  const projects = [
+    { idx:'01', title:'E-Commerce Platform', tag:'Laravel × React · Stripe · SSLCommerz', body:"Full-stack storefront with custom checkout, two payment gateways, an admin dashboard for orders and stock, and a React front-end that loads under two seconds on mid-tier mobile.", metricValue:'<2s', metricLabel:'TTI / mobile' },
+    { idx:'02', title:'SaaS Dashboard', tag:'Node.js × React · UK startup', body:"Admin panel for a UK SaaS, used by 500+ internal and partner accounts. Role-based auth, audit logs, real-time webhooks, and an API surface their iOS team consumes daily.", metricValue:'500+', metricLabel:'active users' },
+    { idx:'03', title:'WordPress CMS Build', tag:'Custom theme · ACF · SEO', body:"Bespoke WordPress build for a service business: hand-rolled theme, custom Gutenberg blocks, structured-data wiring, and a Lighthouse score that turned green on every page.", metricValue:'+45%', metricLabel:'leads / mo' },
+  ];
+
+  const skillGroups = [
+    { label:'Front-end', items:[
+      { name:'React.js', years:'5y' }, { name:'JavaScript / ES', years:'6y' },
+      { name:'HTML / CSS', years:'6y' }, { name:'Tailwind CSS', years:'3y' },
+    ]},
+    { label:'Back-end', items:[
+      { name:'PHP', years:'5y' }, { name:'Laravel', years:'4y' },
+      { name:'Node.js', years:'3y' }, { name:'REST APIs', years:'5y' },
+    ]},
+    { label:'Data / CMS', items:[
+      { name:'MySQL', years:'5y' }, { name:'WordPress', years:'5y' },
+      { name:'Custom themes', years:'4y' }, { name:'Payment integ.', years:'4y' },
+    ]},
+    { label:'Tooling', items:[
+      { name:'GitHub', years:'6y' }, { name:'Vercel', years:'3y' },
+      { name:'Figma', years:'4y' }, { name:'Agile / Scrum', years:'3y' },
+    ]},
+  ];
+
+  // Render static data lists
+  function renderTimeline() {
+    document.getElementById('timeline-container').innerHTML = timeline.map(t =>
+      '<div style="display:flex; align-items:baseline; gap:20px; padding:10px 0; border-bottom:1px solid var(--border);">' +
+        '<span style="font-family:\'JetBrains Mono\', monospace; font-size:12px; letter-spacing:0.1em; color:var(--accent); min-width:32px;">' + t.year + '</span>' +
+        '<span style="font-size:15px; color:var(--text-sub);">' + t.text + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  function renderVitals() {
+    document.getElementById('vitals-container').innerHTML = vitals.map(v =>
+      '<div>' +
+        '<div style="font-family:\'Bricolage Grotesque\', sans-serif; font-size:15px; font-weight:500; color:var(--text); margin-bottom:2px;">' + v.title + '</div>' +
+        '<div style="font-family:\'JetBrains Mono\', monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);">' + v.sub + '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  function renderPlanning() {
+    document.getElementById('planning-container').innerHTML = planningItems.map(p =>
+      '<div>' +
+        '<div style="width:100%; aspect-ratio:4/3; background:var(--bg-alt); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin-bottom:28px; overflow:hidden; transition:background-color 0.4s ease, border-color 0.4s ease;">' +
+          '<span style="font-family:\'JetBrains Mono\', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">Image · Set later</span>' +
+        '</div>' +
+        '<div style="font-family:\'JetBrains Mono\', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:12px;">' + p.num + '</div>' +
+        '<h3 style="margin:0 0 14px; font-family:\'Bricolage Grotesque\', sans-serif; font-size:clamp(24px, 2.4vw, 36px); font-weight:500; letter-spacing:-0.02em; line-height:1.1; color:var(--text);">' + p.title + '</h3>' +
+        '<p style="margin:0; font-size:16px; line-height:1.55; color:var(--text-sub); max-width:480px;">' + p.body + '</p>' +
+      '</div>'
+    ).join('');
+  }
+
+  function renderProjects() {
+    const container = document.getElementById('projects-container');
+    container.innerHTML = projects.map(p =>
+      '<div class="portfolio-row" style="border-top:1px solid var(--border); padding:48px 0; display:grid; grid-template-columns:80px 1.2fr 1fr 160px; gap:48px; align-items:center;">' +
+        '<div style="font-family:\'JetBrains Mono\', monospace; font-size:11px; letter-spacing:0.18em; color:var(--text-faint);">' + p.idx + '</div>' +
+        '<div>' +
+          '<h3 style="margin:0 0 12px; font-family:\'Bricolage Grotesque\', sans-serif; font-size:clamp(28px, 3vw, 44px); font-weight:500; letter-spacing:-0.02em; line-height:1.05; color:var(--text);">' + p.title + '</h3>' +
+          '<div style="font-family:\'JetBrains Mono\', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent);">' + p.tag + '</div>' +
+        '</div>' +
+        '<div class="portfolio-desc" style="font-size:16px; line-height:1.55; color:var(--text-sub); max-width:420px;">' + p.body + '</div>' +
+        '<div class="portfolio-metric" style="font-family:\'JetBrains Mono\', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-faint); text-align:right;">' +
+          '<div style="color:var(--text); font-size:32px; font-family:\'Bricolage Grotesque\', sans-serif; font-weight:500; letter-spacing:-0.02em; line-height:1; margin-bottom:6px;">' + p.metricValue + '</div>' +
+          '<div>' + p.metricLabel + '</div>' +
+        '</div>' +
+      '</div>'
+    ).join('') +
+    '<div style="border-top:1px solid var(--border); padding-top:32px; font-family:\'JetBrains Mono\', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint);">— Plus ninety-something more. Ask me about one.</div>';
+  }
+
+  function renderSkills() {
+    document.getElementById('skills-container').innerHTML = skillGroups.map(g =>
+      '<div data-reveal style="background:var(--bg); padding:40px 32px; min-height:280px; display:flex; flex-direction:column; transition:background-color 0.4s ease;">' +
+        '<div style="font-family:\'JetBrains Mono\', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:24px;">' + g.label + '</div>' +
+        '<div style="display:flex; flex-direction:column; gap:12px; flex:1;">' +
+          g.items.map(s =>
+            '<div style="display:flex; justify-content:space-between; align-items:baseline; padding-bottom:10px; border-bottom:1px solid var(--border);">' +
+              '<span style="font-family:\'Bricolage Grotesque\', sans-serif; font-size:18px; font-weight:500; letter-spacing:-0.01em; color:var(--text);">' + s.name + '</span>' +
+              '<span style="font-family:\'JetBrains Mono\', monospace; font-size:10px; letter-spacing:0.16em; color:var(--text-faint);">' + s.years + '</span>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  // Nav rendering
+  const navData = [
+    { id:'intro', num:'00', label:'Intro' },
+    { id:'background', num:'01', label:'Background' },
+    { id:'planning', num:'02', label:'Planning' },
+    { id:'portfolio', num:'03', label:'Portfolio' },
+    { id:'toolkit', num:'04', label:'Toolkit' },
+    { id:'contact', num:'05', label:'Contact' },
+  ];
+
+  function renderNav() {
+    const scrolledPastHero = activeSection !== 'intro';
+    const expanded = navOpen || scrolledPastHero;
+
+    nav.innerHTML = navData.map(n => {
+      const active = n.id === activeSection;
+      const opacity = active ? 1 : (expanded ? 0.7 : 0.55);
+      const numWeight = active ? '500' : '400';
+      const labelOpacity = expanded ? (active ? 1 : 0.7) : 0;
+      const labelMaxW = expanded ? '140px' : '0px';
+      const labelWeight = active ? '500' : '400';
+      const lineW = expanded ? (active ? '32px' : '20px') : (active ? '20px' : '0px');
+      const lineBg = active ? 'var(--accent)' : 'var(--text-faint)';
+
+      return '<a href="#' + n.id + '" data-nav-id="' + n.id + '" style="display:flex; align-items:center; gap:14px; color:var(--text); opacity:' + opacity + '; transition: opacity .4s ease; cursor:pointer; text-decoration:none;">' +
+        '<span style="display:inline-block; min-width:18px; font-feature-settings:\'tnum\'; font-weight:' + numWeight + ';">' + n.num + '</span>' +
+        '<span style="width:' + lineW + '; height:1px; background:' + lineBg + '; transition: width .45s cubic-bezier(.2,.7,.2,1), background .4s ease; transform-origin:left;"></span>' +
+        '<span style="opacity:' + labelOpacity + '; max-width:' + labelMaxW + '; overflow:hidden; white-space:nowrap; transition: opacity .35s cubic-bezier(.2,.7,.2,1), max-width .45s cubic-bezier(.2,.7,.2,1); font-weight:' + labelWeight + ';">' + n.label + '</span>' +
+      '</a>';
+    }).join('');
+
+    nav.querySelectorAll('[data-nav-id]').forEach(a => {
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        scrollToId(this.getAttribute('data-nav-id'));
+      });
+    });
+  }
+
+  function updateNavVisibility() {
+    const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    const vh = window.innerHeight;
+    const visible = scrollY > vh * 0.5;
+    nav.style.opacity = visible ? '1' : '0';
+    nav.style.transform = 'translateY(-50%) translateX(' + (visible ? '0px' : '-24px') + ')';
+    nav.style.pointerEvents = visible ? 'auto' : 'none';
+  }
+
+  // Theme
+  function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    dayLabel.style.opacity = theme === 'light' ? '1' : '0.4';
+    nightLabel.style.opacity = theme === 'dark' ? '1' : '0.4';
+    portrait.style.filter = theme === 'dark' ? 'grayscale(0.15) contrast(1.05)' : 'none';
+  }
+
+  // Clock
+  function updateClock() {
+    var d = new Date();
+    var opts = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka' };
+    var t = d.toLocaleTimeString('en-US', opts) + ' DHK';
+    headerClock.textContent = t;
+    footerClock.textContent = t;
+  }
+
+  // Scroll progress
+  function updateScrollProgress() {
+    var scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    var docH = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    var pct = Math.min(100, Math.max(0, (scrollY / docH) * 100));
+    scrollBar.style.height = pct + '%';
+  }
+
+  // Active section
+  function updateActiveSection() {
+    var scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    var probe = scrollY + window.innerHeight * 0.35;
+    var active = 'intro';
+    for (var i = 0; i < sectionIds.length; i++) {
+      var el = document.getElementById(sectionIds[i]);
+      if (el && el.offsetTop <= probe) active = sectionIds[i];
+    }
+    if (active !== activeSection) {
+      activeSection = active;
+      renderNav();
+    }
+  }
+
+  // Scroll to section
+  function scrollToId(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (lenis) { lenis.scrollTo(el, { offset: -20, duration: 1.4 }); }
+    else { window.scrollTo({ top: el.offsetTop, behavior: 'smooth' }); }
+  }
+
+  // Email
+  function handleEmailClick(e) {
+    e.preventDefault();
+    window.location.href = 'mailto:iamsakibdeveloper' + String.fromCharCode(64) + 'gmail.com';
+  }
+
+  // Video keep-alive
+  function ensureVideoPlays() {
+    var v = document.querySelector('video');
+    if (!v) return;
+    v.muted = true; v.volume = 0; v.defaultMuted = true; v.loop = true; v.playsInline = true;
+    if (v.ended || (v.duration && v.currentTime >= v.duration - 0.05)) { try { v.currentTime = 0; } catch(e) {} }
+    if (v.paused) { v.play().catch(function(){}); }
+  }
+
+  // Init
+  function init() {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    renderTimeline();
+    renderVitals();
+    renderPlanning();
+    renderProjects();
+    renderSkills();
+    renderNav();
+    updateClock();
+    updateNavVisibility();
+    updateScrollProgress();
+
+    // Lenis smooth scroll
+    var tryLenis = function() {
+      if (typeof window.Lenis === 'undefined') { setTimeout(tryLenis, 50); return; }
+      lenis = new window.Lenis({
+        duration: 1.25,
+        easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1.4,
+      });
+      var raf = function(time) { lenis.raf(time); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+
+      lenis.on('scroll', function() {
+        updateScrollProgress();
+        updateActiveSection();
+        updateNavVisibility();
+      });
+    };
+    tryLenis();
+
+    // Events
+    themeToggle.addEventListener('click', toggleTheme);
+
+    document.getElementById('email-link').addEventListener('click', handleEmailClick);
+
+    document.querySelectorAll('.js-scroll-contact').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        scrollToId('contact');
+      });
+    });
+
+    nav.addEventListener('mouseenter', function() { navOpen = true; renderNav(); });
+    nav.addEventListener('mouseleave', function() { navOpen = false; renderNav(); });
+
+    window.addEventListener('scroll', function() {
+      updateScrollProgress();
+      updateActiveSection();
+      updateNavVisibility();
+    }, { passive: true });
+
+    window.addEventListener('resize', function() {
+      updateScrollProgress();
+      updateNavVisibility();
+    });
+
+    setInterval(updateClock, 30000);
+
+    // Video
+    var bindVideoLoop = function() {
+      var v = document.querySelector('video');
+      if (v && !v._loopBound) {
+        v._loopBound = true;
+        v.addEventListener('ended', function() { try { v.currentTime = 0; v.play().catch(function(){}); } catch(e){} });
+      }
+    };
+    bindVideoLoop();
+    setTimeout(bindVideoLoop, 500);
+    ensureVideoPlays();
+    setTimeout(ensureVideoPlays, 400);
+    setTimeout(ensureVideoPlays, 1500);
+    setInterval(ensureVideoPlays, 3000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
