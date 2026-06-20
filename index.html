@@ -7,7 +7,7 @@
 <meta name="description" content="Full-stack web developer based in Dhaka. React, Laravel, Node.js. 100+ projects shipped.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <style>
 /* ─── RESET ─────────────────────────────────────────────────────── */
@@ -139,14 +139,25 @@ body {
   text-transform: uppercase; color: var(--text);
   transition: color 0.45s ease;
 }
+/* signature replaces logo text */
+#hdr-signature {
+  height: 46px; width: auto; display: block;
+  filter: invert(1);                         /* dark mode: cream bg ≈ dark, sig becomes light */
+  transition: filter 0.45s ease;
+}
+[data-theme="light"] #hdr-signature { filter: none; } /* light mode: original dark-on-cream */
+
 #theme-toggle {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 6px 13px;
-  border: 1px solid var(--border-mid);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px;
+  border: 1.5px solid var(--text-faint);    /* thicker, more visible border */
   border-radius: 999px; cursor: pointer;
-  transition: border-color 0.45s ease;
+  background: rgba(255,255,255,0.07);       /* subtle fill for contrast */
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+  transition: border-color 0.45s ease, background-color 0.45s ease;
   user-select: none;
 }
+[data-theme="light"] #theme-toggle { background: rgba(0,0,0,0.05); }
 #theme-toggle span { transition: opacity 0.3s ease; }
 .avail-dot {
   width: 6px; height: 6px; border-radius: 50%;
@@ -265,25 +276,28 @@ body {
   max-width: 860px;
 }
 #hero-name {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700; font-stretch: 78%;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700; font-stretch: normal;
   font-size: clamp(68px, 10.5vw, 168px);
   line-height: 0.88; letter-spacing: -0.04em;
   color: var(--text); margin: 0 0 22px;
   transition: color 0.45s ease;
+  text-shadow: 0 4px 32px rgba(0,0,0,0.4);
 }
 #hero-name .dot { font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; color: var(--accent); }
 #hero-role {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--text-dim);
+  text-transform: uppercase; color: var(--text);
   margin-bottom: 22px; transition: color 0.45s ease;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.5);
 }
 #hero-desc {
   font-size: clamp(15px, 1.3vw, 20px);
-  line-height: 1.58; color: var(--text-sub);
+  line-height: 1.58; color: var(--text);
   max-width: 500px; margin-bottom: 38px;
   transition: color 0.45s ease;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.55);
 }
 .btn-primary {
   display: inline-flex; align-items: center; gap: 10px;
@@ -325,9 +339,9 @@ body {
   margin-bottom: 52px; transition: color 0.45s ease;
 }
 #bg-heading {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(40px, 4.6vw, 72px);
-  font-weight: 500; font-stretch: 84%;
+  font-weight: 500; font-stretch: normal;
   letter-spacing: -0.03em; line-height: 1;
   margin-bottom: 6px; transition: color 0.45s ease;
 }
@@ -400,9 +414,9 @@ body {
 /* ─── PLANNING ───────────────────────────────────────────────────── */
 #planning { padding: 80px 8vw 160px; max-width: 1600px; margin: 0 auto; }
 #planning-heading {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(48px, 6.5vw, 108px);
-  font-weight: 700; font-stretch: 78%;
+  font-weight: 700; font-stretch: normal;
   letter-spacing: -0.038em; line-height: 0.91;
   margin-bottom: 18px; transition: color 0.45s ease;
 }
@@ -461,9 +475,9 @@ body {
   transition: border-color 0.45s ease;
 }
 #port-heading {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(48px, 6.5vw, 108px);
-  font-weight: 700; font-stretch: 78%;
+  font-weight: 700; font-stretch: normal;
   letter-spacing: -0.038em; line-height: 0.91;
   transition: color 0.45s ease;
 }
@@ -511,7 +525,7 @@ body {
   padding: 24px 26px 26px; display: flex; flex-direction: column; flex: 1;
 }
 .proj-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(19px, 1.6vw, 24px);
   font-weight: 600; letter-spacing: -0.02em; line-height: 1.2;
   margin-bottom: 10px; color: var(--text); transition: color 0.45s ease;
@@ -566,9 +580,9 @@ body {
 /* ─── TOOLKIT ────────────────────────────────────────────────────── */
 #toolkit { padding: 80px 8vw 160px; max-width: 1600px; margin: 0 auto; }
 #toolkit-heading {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(48px, 6.5vw, 108px);
-  font-weight: 700; font-stretch: 78%;
+  font-weight: 700; font-stretch: normal;
   letter-spacing: -0.038em; line-height: 0.91;
   margin-bottom: 80px; transition: color 0.45s ease;
 }
@@ -613,9 +627,9 @@ body {
 /* ─── CONTACT ────────────────────────────────────────────────────── */
 #contact { padding: 80px 8vw 80px; max-width: 1600px; margin: 0 auto; }
 #contact-heading {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(72px, 11.5vw, 210px);
-  font-weight: 700; font-stretch: 74%;
+  font-weight: 700; font-stretch: normal;
   letter-spacing: -0.048em; line-height: 0.88;
   margin-bottom: 64px; transition: color 0.45s ease;
 }
@@ -652,7 +666,7 @@ body {
   transition: color 0.45s ease;
 }
 .contact-link-val {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(24px, 2.8vw, 42px);
   font-weight: 500; letter-spacing: -0.02em;
   color: var(--text); transition: color 0.45s ease;
@@ -683,6 +697,81 @@ body {
   margin-bottom: 30px; transition: color 0.45s ease;
 }
 .cc-small span { color: var(--text-dim); }
+
+/* ─── CONTACT FORM ───────────────────────────────────────────────── */
+.contact-form-wrap { margin-top: 60px; }
+.cf-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 16px;
+}
+.cf-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.cf-row .cf-field { margin-bottom: 0; }
+.cf-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-faint); transition: color 0.45s ease;
+}
+.cf-input {
+  background: transparent;
+  border: none; border-bottom: 1px solid var(--border-mid);
+  padding: 12px 0; font-size: 16px; line-height: 1.5;
+  font-family: 'Newsreader', Georgia, serif;
+  color: var(--text); width: 100%;
+  outline: none;
+  transition: border-color 0.3s ease, color 0.45s ease;
+}
+.cf-input::placeholder { color: var(--text-faint); }
+.cf-input:focus { border-bottom-color: var(--text); }
+.cf-textarea { resize: none; min-height: 120px; }
+.cf-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0;
+}
+.cf-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border: 1px solid var(--border-mid);
+  border-radius: 999px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint);
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  user-select: none;
+}
+.cf-chip input[type="radio"] { display: none; }
+.cf-chip:has(input:checked) {
+  border-color: var(--accent); color: var(--accent); background: transparent;
+}
+.cf-chip:hover { border-color: var(--text-faint); color: var(--text); }
+.cf-actions {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 36px; padding-top: 28px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.cf-submit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 14px 30px; border-radius: 999px;
+  background: var(--text); color: var(--bg);
+  border: none; cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.45s ease, color 0.45s ease;
+}
+.cf-submit:hover { opacity: 0.82; }
+.cf-copy-email {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 13px 24px; border-radius: 999px;
+  border: 1px solid var(--border-mid);
+  background: transparent; color: var(--text); cursor: pointer;
+  transition: border-color 0.3s ease, color 0.45s ease;
+}
+.cf-copy-email:hover { border-color: var(--text); }
+.cf-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em;
+  margin-top: 16px; color: var(--accent);
+  min-height: 20px; transition: color 0.45s ease;
+}
+@media (max-width: 768px) { .cf-row { grid-template-columns: 1fr; } }
 
 /* ─── FOOTER ─────────────────────────────────────────────────────── */
 #site-footer {
@@ -743,9 +832,9 @@ body {
   color: var(--accent); min-width: 26px;
 }
 .mob-nav-label {
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 36px; font-weight: 700; letter-spacing: -0.025em;
-  line-height: 1; font-stretch: 80%;
+  line-height: 1; font-stretch: normal;
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────── */
@@ -822,11 +911,7 @@ body {
 <!-- ── HEADER ──────────────────────────────────────────────────── -->
 <header id="site-header">
   <div class="hdr-logo">
-    <div class="hdr-monogram">s</div>
-    <div class="hdr-name">
-      <div>Sakibun Noor</div>
-      <div style="opacity:.5;">Full-Stack / DHK</div>
-    </div>
+    <img id="hdr-signature" src="uploads/signature.png" alt="Sakibun Noor signature">
   </div>
   <div class="hdr-right">
     <div id="theme-toggle" role="button" aria-label="Toggle theme">
@@ -958,46 +1043,64 @@ body {
 <!-- ══════════════════════════════════════════════════════════════ -->
 <section id="contact">
   <div data-reveal>
-    <div class="sec-label">05 — Contact</div>
+    <div class="sec-label">05 — Contact &amp; Availability</div>
     <h2 id="contact-heading">Let's build<br><em>something</em> good.</h2>
   </div>
 
   <div class="contact-grid">
-    <div data-stagger>
-      <p class="contact-desc">Open to full-stack contract work, dev-team roles, or anything where someone needs an API stitched to an interface. Based in Dhaka, comfortable across timezones. Replies usually land within 24 hours.</p>
+    <!-- Left: form -->
+    <div data-reveal>
+      <p class="contact-desc">Open to senior full-stack roles, contract work, or anything where craft and ownership matter. Based in Dhaka, remote-first. Reply within 24 hours.</p>
 
-      <div>
-        <a id="email-link" href="#" class="contact-link">
-          <div class="contact-link-left">
-            <span class="contact-link-type">Email</span>
-            <span class="contact-link-val">iamsakibdeveloper&#64;gmail.com</span>
+      <div class="contact-form-wrap">
+        <form id="contact-form">
+          <div class="cf-row">
+            <div class="cf-field">
+              <label class="cf-label" for="cf-name">First &amp; Last Name</label>
+              <input class="cf-input" id="cf-name" type="text" placeholder="Your full name" required>
+            </div>
+            <div class="cf-field">
+              <label class="cf-label" for="cf-email">Email</label>
+              <input class="cf-input" id="cf-email" type="email" placeholder="your@email.com" required>
+            </div>
           </div>
-          <span class="contact-arrow">→</span>
-        </a>
-        <a href="https://github.com/Sakibun-Noor" target="_blank" rel="noopener" class="contact-link">
-          <div class="contact-link-left">
-            <span class="contact-link-type">GitHub</span>
-            <span class="contact-link-val">@Sakibun-Noor</span>
+
+          <div class="cf-field">
+            <label class="cf-label">What's this about?</label>
+            <div class="cf-chips">
+              <label class="cf-chip"><input type="radio" name="cf-subject" value="Hire"> Hire me</label>
+              <label class="cf-chip"><input type="radio" name="cf-subject" value="Collaborate"> Collaborate</label>
+              <label class="cf-chip"><input type="radio" name="cf-subject" value="Contract"> Contract</label>
+              <label class="cf-chip"><input type="radio" name="cf-subject" value="Other"> Other</label>
+            </div>
           </div>
-          <span class="contact-arrow">↗</span>
-        </a>
-        <a href="https://www.linkedin.com/in/sakibun-jawad-noor/" target="_blank" rel="noopener" class="contact-link">
-          <div class="contact-link-left">
-            <span class="contact-link-type">LinkedIn</span>
-            <span class="contact-link-val">Sakibun Jawad Noor</span>
+
+          <div class="cf-field">
+            <label class="cf-label" for="cf-msg">Message</label>
+            <textarea class="cf-input cf-textarea" id="cf-msg" placeholder="Tell me what you're building…" rows="5" required></textarea>
           </div>
-          <span class="contact-arrow">↗</span>
-        </a>
+
+          <div class="cf-actions">
+            <button type="submit" class="cf-submit">Send Message →</button>
+            <button type="button" class="cf-copy-email" id="cf-copy-btn">Copy Email</button>
+          </div>
+          <p id="cf-status" class="cf-status"></p>
+        </form>
       </div>
     </div>
 
+    <!-- Right: contact info -->
     <div class="contact-card" data-reveal>
+      <p class="cc-label">Email</p>
+      <a id="email-link" href="#" class="cc-value" style="display:block;cursor:pointer;">iamsakibdeveloper&#64;gmail.com</a>
+      <p class="cc-label">GitHub</p>
+      <a href="https://github.com/Sakibun-Noor" target="_blank" rel="noopener" class="cc-value" style="display:block;">@Sakibun-Noor</a>
+      <p class="cc-label">LinkedIn</p>
+      <a href="https://www.linkedin.com/in/sakibun-jawad-noor/" target="_blank" rel="noopener" class="cc-value" style="display:block;">Sakibun Jawad Noor</a>
       <p class="cc-label">Direct line</p>
       <p class="cc-value">+880 131 443 6871</p>
       <p class="cc-label">Where</p>
-      <p class="cc-small">Uttara, Dhaka 1230<br><span>Bangladesh · GMT+6</span></p>
-      <p class="cc-label">Office hours</p>
-      <p class="cc-small" style="margin-bottom:0;">Sun – Thu · 10 am – 8 pm<br><span>Friday — code dump only</span></p>
+      <p class="cc-small" style="margin-bottom:0;">Uttara, Dhaka 1230<br><span>Bangladesh · GMT+6</span></p>
     </div>
   </div>
 
@@ -1362,6 +1465,32 @@ body {
     document.getElementById('email-link').addEventListener('click', function(e) {
       e.preventDefault();
       window.location.href = 'mailto:iamsakibdeveloper' + String.fromCharCode(64) + 'gmail.com';
+    });
+
+    /* contact form */
+    var cfForm   = document.getElementById('contact-form');
+    var cfStatus = document.getElementById('cf-status');
+    cfForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name    = document.getElementById('cf-name').value.trim();
+      var email   = document.getElementById('cf-email').value.trim();
+      var subject = (cfForm.querySelector('input[name="cf-subject"]:checked') || {}).value || 'General';
+      var msg     = document.getElementById('cf-msg').value.trim();
+      var mailto  = 'mailto:iamsakibdeveloper' + String.fromCharCode(64) + 'gmail.com' +
+        '?subject=' + encodeURIComponent('[' + subject + '] from ' + name) +
+        '&body=' + encodeURIComponent(msg + '\n\nFrom: ' + name + '\nReply-to: ' + email);
+      window.location.href = mailto;
+      cfStatus.textContent = 'Opening your email client…';
+      setTimeout(function(){ cfStatus.textContent = ''; }, 4000);
+    });
+    document.getElementById('cf-copy-btn').addEventListener('click', function() {
+      var addr = 'iamsakibdeveloper' + String.fromCharCode(64) + 'gmail.com';
+      navigator.clipboard.writeText(addr).then(function() {
+        cfStatus.textContent = 'Email copied to clipboard.';
+        setTimeout(function(){ cfStatus.textContent = ''; }, 3000);
+      }).catch(function() {
+        cfStatus.textContent = addr;
+      });
     });
 
     /* nav hover — just toggle class; CSS transitions handle animation */
