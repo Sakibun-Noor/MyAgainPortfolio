@@ -142,10 +142,12 @@ body {
 /* signature replaces logo text */
 #hdr-signature {
   height: 46px; width: auto; display: block;
-  filter: invert(1);                         /* dark mode: cream bg ≈ dark, sig becomes light */
+  filter: brightness(0) invert(1);   /* night: pure white signature on transparent bg */
   transition: filter 0.45s ease;
 }
-[data-theme="light"] #hdr-signature { filter: none; } /* light mode: original dark-on-cream */
+[data-theme="light"] #hdr-signature {
+  filter: brightness(0);             /* day: pure black signature on transparent bg */
+}
 
 #theme-toggle {
   display: inline-flex; align-items: center; gap: 8px;
