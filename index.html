@@ -424,16 +424,16 @@ body {
   width: 100%; aspect-ratio: 4/3;
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
   margin-bottom: 28px; overflow: hidden;
   transition: background-color 0.45s ease, border-color 0.45s ease;
 }
-.planning-card-img span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text-faint);
-  transition: color 0.45s ease;
+.planning-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
 }
+.planning-card-img:hover img { transform: scale(1.03); }
 .planning-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px; letter-spacing: 0.18em;
@@ -1016,10 +1016,12 @@ body {
   var PLANNING = [
     {
       num: 'A.01', title: 'Architecture First',
+      img: 'uploads/planning-arch.jpeg',
       body: "Every project starts with the question: what does this system look like at ten-times the current scale? I map data flows, API contracts, and component hierarchies before writing the first line. Schema design, auth flows, and error-state matrices — that's where most bugs are prevented, not fixed."
     },
     {
       num: 'A.02', title: 'Ship, Then Iterate',
+      img: 'uploads/planning-ship.jpeg',
       body: "Perfection is a trap that kills delivery. I push to production early, instrument everything I can, and let real user behaviour guide the next round. The best code I've written was the code I deleted in week two because analytics showed a simpler path."
     },
   ];
@@ -1102,7 +1104,7 @@ body {
     var el = document.getElementById('planning-cards');
     el.innerHTML = PLANNING.map(function(p) {
       return '<div>' +
-        '<div class="planning-card-img"><span>Image · Set later</span></div>' +
+        '<div class="planning-card-img"><img src="' + p.img + '" alt="' + p.title + '" loading="lazy"></div>' +
         '<div class="planning-num">' + p.num + '</div>' +
         '<h3 class="planning-title">' + p.title + '</h3>' +
         '<p class="planning-body">' + p.body + '</p>' +
