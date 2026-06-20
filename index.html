@@ -478,57 +478,90 @@ body {
   text-align: right; line-height: 1.7;
   transition: color 0.45s ease;
 }
-.project-row {
-  border-top: 1px solid var(--border);
-  padding: 48px 0;
-  display: grid;
-  grid-template-columns: 72px 1.1fr 1fr 148px;
-  gap: 44px; align-items: center;
+/* ─── PORTFOLIO CARDS ────────────────────────────────────────── */
+.proj-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.proj-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: border-color 0.35s ease, background-color 0.45s ease;
+}
+.proj-card:hover { border-color: var(--border-mid); }
+.proj-thumb {
+  width: 100%; aspect-ratio: 16/10;
+  background: var(--bg-alt); overflow: hidden;
+}
+.proj-thumb img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
+}
+.proj-card:hover .proj-thumb img { transform: scale(1.04); }
+.proj-thumb-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-alt);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px; letter-spacing: 0.1em; color: var(--border-mid);
+  transition: background-color 0.45s ease;
+}
+.proj-body {
+  padding: 24px 26px 26px; display: flex; flex-direction: column; flex: 1;
+}
+.proj-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(19px, 1.6vw, 24px);
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1.2;
+  margin-bottom: 10px; color: var(--text); transition: color 0.45s ease;
+}
+.proj-desc {
+  font-size: 14px; line-height: 1.62;
+  color: var(--text-sub); margin-bottom: 18px; flex: 1;
+  transition: color 0.45s ease;
+}
+.proj-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px;
+}
+.proj-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 11px; border: 1px solid var(--border-mid); border-radius: 999px;
+  color: var(--text-faint);
+  transition: color 0.45s ease, border-color 0.45s ease;
+}
+.proj-cta {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 18px; border-top: 1px solid var(--border);
   transition: border-color 0.45s ease;
 }
-.project-idx {
+.proj-cta-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.18em;
-  color: var(--text-faint); transition: color 0.45s ease;
-}
-.project-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(26px, 2.8vw, 42px);
-  font-weight: 500; letter-spacing: -0.02em;
-  line-height: 1.06; margin-bottom: 11px;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--text); transition: color 0.45s ease;
 }
-.project-tag {
+.proj-cta-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--border-mid); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: var(--text); text-decoration: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.proj-cta-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.proj-view-all {
+  text-align: center; margin-top: 60px;
+}
+.proj-view-all a {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 36px; border-radius: 999px;
+  border: 1px solid var(--border-mid);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--accent);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
-.project-body {
-  font-size: 15px; line-height: 1.58;
-  color: var(--text-sub); max-width: 400px;
-  transition: color 0.45s ease;
-}
-.project-metric {
-  text-align: right;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--text-faint);
-  transition: color 0.45s ease;
-}
-.project-metric-val {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 30px; font-weight: 500; letter-spacing: -0.02em;
-  line-height: 1; margin-bottom: 5px;
-  color: var(--text); display: block;
-  transition: color 0.45s ease;
-}
-.port-footer {
-  border-top: 1px solid var(--border); padding-top: 30px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text-faint);
-  transition: border-color 0.45s ease, color 0.45s ease;
-}
+.proj-view-all a:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* ─── TOOLKIT ────────────────────────────────────────────────────── */
 #toolkit { padding: 80px 8vw 160px; max-width: 1600px; margin: 0 auto; }
@@ -719,8 +752,6 @@ body {
 @media (max-width: 1100px) {
   .bg-grid, .contact-grid { grid-template-columns: 1fr; gap: 52px; }
   .bg-sidebar { position: relative; top: 0; }
-  .project-row { grid-template-columns: 60px 1fr; gap: 20px; }
-  .project-body, .project-metric { display: none; }
   .skills-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
@@ -749,6 +780,7 @@ body {
   #contact    { padding-top: 60px; padding-bottom: 60px; }
   /* grids */
   .planning-grid { grid-template-columns: 1fr; gap: 40px; }
+  .proj-grid { grid-template-columns: 1fr; gap: 16px; }
   .port-header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .skills-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
@@ -904,7 +936,10 @@ body {
       <div>98% satisfaction</div>
     </div>
   </div>
-  <div id="projects" data-stagger></div>
+  <div id="projects" class="proj-grid"></div>
+  <div class="proj-view-all" data-reveal>
+    <a href="#">View All Projects →</a>
+  </div>
 </section>
 
 <!-- ══════════════════════════════════════════════════════════════ -->
@@ -1028,22 +1063,32 @@ body {
 
   var PROJECTS = [
     {
-      idx:'01', title:'E-Commerce Platform',
-      tag:'Laravel × React · Stripe · SSLCommerz',
-      body:'Full-stack storefront with custom checkout, two payment gateways, admin dashboard for orders and stock, and a React front-end that loads under two seconds on mid-tier mobile.',
-      metricValue:'<2s', metricLabel:'TTI / mobile'
+      idx: '01', title: 'E-Commerce Platform',
+      img: '',
+      tags: ['Laravel', 'React', 'Stripe', 'SSLCommerz'],
+      body: 'Full-stack storefront with custom checkout, two payment gateways, admin dashboard for orders and stock. React front-end loads under two seconds on mid-tier mobile.',
+      link: '#'
     },
     {
-      idx:'02', title:'SaaS Dashboard',
-      tag:'Node.js × React · UK startup',
-      body:'Admin panel for a UK SaaS product, used by 500+ internal and partner accounts. Role-based auth, audit logs, real-time webhooks, and an API surface their iOS team consumes daily.',
-      metricValue:'500+', metricLabel:'active users'
+      idx: '02', title: 'SaaS Dashboard',
+      img: '',
+      tags: ['Node.js', 'React', 'REST API'],
+      body: 'Admin panel for a UK SaaS product used by 500+ accounts. Role-based auth, audit logs, real-time webhooks, and a mobile-consumed API.',
+      link: '#'
     },
     {
-      idx:'03', title:'WordPress CMS Build',
-      tag:'Custom theme · ACF · SEO',
-      body:'Bespoke WordPress build: hand-rolled theme, custom Gutenberg blocks, structured-data wiring, and a Lighthouse score that turned green on every page.',
-      metricValue:'+45%', metricLabel:'leads / mo'
+      idx: '03', title: 'WordPress CMS Build',
+      img: '',
+      tags: ['WordPress', 'Custom Theme', 'ACF', 'SEO'],
+      body: 'Hand-rolled theme, custom Gutenberg blocks, structured-data wiring, and a Lighthouse score that turned green on every page.',
+      link: '#'
+    },
+    {
+      idx: '04', title: 'Jewelry E-Commerce',
+      img: '',
+      tags: ['React', 'Node.js', 'MySQL'],
+      body: 'Dynamic product catalog with filtering, wishlist, secure checkout, and an admin panel for inventory and order management.',
+      link: '#'
     },
   ];
 
@@ -1115,20 +1160,25 @@ body {
   function renderProjects() {
     var el = document.getElementById('projects');
     el.innerHTML = PROJECTS.map(function(p) {
-      return '<div class="project-row">' +
-        '<div class="project-idx">' + p.idx + '</div>' +
-        '<div>' +
-          '<div class="project-title">' + p.title + '</div>' +
-          '<div class="project-tag">' + p.tag + '</div>' +
-        '</div>' +
-        '<div class="project-body">' + p.body + '</div>' +
-        '<div class="project-metric">' +
-          '<span class="project-metric-val">' + p.metricValue + '</span>' +
-          p.metricLabel +
+      var thumb = p.img
+        ? '<img src="' + p.img + '" alt="' + p.title + '" loading="lazy">'
+        : '<div class="proj-thumb-ph">' + p.idx + '</div>';
+      var tags = p.tags.map(function(t) {
+        return '<span class="proj-tag">' + t + '</span>';
+      }).join('');
+      return '<div class="proj-card">' +
+        '<div class="proj-thumb">' + thumb + '</div>' +
+        '<div class="proj-body">' +
+          '<h3 class="proj-title">' + p.title + '</h3>' +
+          '<p class="proj-desc">' + p.body + '</p>' +
+          '<div class="proj-tags">' + tags + '</div>' +
+          '<div class="proj-cta">' +
+            '<span class="proj-cta-label">View Project</span>' +
+            '<a href="' + p.link + '" class="proj-cta-btn" aria-label="View ' + p.title + '">→</a>' +
+          '</div>' +
         '</div>' +
       '</div>';
-    }).join('') +
-    '<div class="port-footer">— Plus ninety-something more. Ask me about one.</div>';
+    }).join('');
   }
 
   function renderSkills() {
