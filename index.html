@@ -794,11 +794,6 @@ body {
       <span style="opacity:0.3;">/</span>
       <span id="lbl-night" style="opacity:1;">Night</span>
     </div>
-    <div class="avail-wrap" style="display:flex;align-items:center;gap:7px;">
-      <span class="avail-dot"></span>
-      <span>Available · 2026</span>
-    </div>
-    <span id="hdr-clock"></span>
     <button id="mob-menu-btn" aria-label="Open menu">
       <span></span><span></span>
     </button>
@@ -826,15 +821,11 @@ body {
 
   <div id="hero-content">
     <p id="hero-role">Full-Stack Web Developer</p>
-    <h1 id="hero-name">Sakibun<br>Noor<span class="dot">.</span></h1>
+    <h1 id="hero-name">Sakibun<br>Noor</h1>
     <p id="hero-desc">I build for the web — end to end. React up top, Laravel or Node underneath. Five years, a hundred-plus projects, and still shipping.</p>
     <button class="btn-primary js-to-contact">Get in touch <span class="arrow">→</span></button>
   </div>
 
-  <div id="hero-scroll-hint">
-    <span>Scroll</span>
-    <span class="scroll-line"></span>
-  </div>
 </section>
 
 <!-- ══════════════════════════════════════════════════════════════ -->
@@ -1075,8 +1066,6 @@ body {
   var root        = document.getElementById('root');
   var sideNav     = document.getElementById('side-nav');
   var scrollFill  = document.getElementById('scroll-fill');
-  var hdrClock    = document.getElementById('hdr-clock');
-  var footerClock = document.getElementById('footer-clock');
   var lblDay      = document.getElementById('lbl-day');
   var lblNight    = document.getElementById('lbl-night');
 
@@ -1243,8 +1232,8 @@ body {
     var t = new Date().toLocaleTimeString('en-US', {
       hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka'
     }) + ' DHK';
-    hdrClock.textContent = t;
-    footerClock.textContent = t;
+    var fc = document.getElementById('footer-clock');
+    if (fc) fc.textContent = t;
   }
 
   /* ── VIDEO ─────────────────────────────────────────────────── */
