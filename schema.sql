@@ -59,6 +59,36 @@ create policy media_admin_delete
   to authenticated
   using (bucket_id = 'media');
 
+-- ── 3. Lock writes to your account only (recommended) ─────────────
+-- The policies above trust ANY signed-in user. That is only safe while
+-- public sign-ups are disabled. Replace the email below with your own
+-- and run this section to pin write access to a single account, so an
+-- accidentally-enabled sign-up form cannot hand anyone your site.
+--
+-- Uncomment the block, set the address, and run it.
+
+-- create or replace function public.is_site_admin() returns boolean
+-- language sql stable as $$
+--   select coalesce(auth.jwt() ->> 'email', '') = 'you@example.com';
+-- $$;
+--
+-- drop policy if exists content_admin_write on public.content;
+-- create policy content_admin_write on public.content for all
+--   to authenticated using (public.is_site_admin())
+--   with check (public.is_site_admin());
+--
+-- drop policy if exists media_admin_insert on storage.objects;
+-- create policy media_admin_insert on storage.objects for insert
+--   to authenticated with check (bucket_id = 'media' and public.is_site_admin());
+--
+-- drop policy if exists media_admin_update on storage.objects;
+-- create policy media_admin_update on storage.objects for update
+--   to authenticated using (bucket_id = 'media' and public.is_site_admin());
+--
+-- drop policy if exists media_admin_delete on storage.objects;
+-- create policy media_admin_delete on storage.objects for delete
+--   to authenticated using (bucket_id = 'media' and public.is_site_admin());
+
 -- ═══════════════════════════════════════════════════════════════════
 --  Remaining setup, done in the dashboard rather than SQL:
 --
