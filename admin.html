@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Admin — Sakibun Noor</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="uploads/signature.png">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0e; --panel:#141417; --card:#1a1a1f; --field:#101013;
+  --text:#f3efe7; --sub:rgba(243,239,231,.70); --dim:rgba(243,239,231,.44);
+  --faint:rgba(243,239,231,.26);
+  --line:rgba(243,239,231,.10); --line2:rgba(243,239,231,.17);
+  --accent:#4d7cff; --ok:#7ee7a0; --bad:#ff6b6b; --warn:#ffc86b;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --serif:'Newsreader',Georgia,serif;
+  --sans:'Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);-webkit-font-smoothing:antialiased;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+button{font-family:var(--mono);cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:var(--serif);color:var(--text)}
+.mono{font-family:var(--mono)}
+
+/* ── LOGIN ─────────────────────────────────────────────── */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+#gate-box{width:100%;max-width:380px}
+#gate-box h1{font-family:var(--sans);font-size:34px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px}
+#gate-box p.lede{color:var(--dim);font-size:14px;margin-bottom:34px}
+.gate-field{margin-bottom:16px}
+.gate-field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.gate-field input{width:100%;background:var(--field);border:1px solid var(--line2);
+  border-radius:9px;padding:13px 14px;font-size:15px;outline:none}
+.gate-field input:focus{border-color:var(--accent)}
+#gate-submit{width:100%;background:var(--text);color:var(--bg);padding:14px;border-radius:9px;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin-top:10px}
+#gate-submit:disabled{opacity:.5;cursor:default}
+#gate-msg{font-family:var(--mono);font-size:11px;margin-top:18px;min-height:34px;line-height:1.6}
+
+/* ── SHELL ─────────────────────────────────────────────── */
+#app{display:none;min-height:100vh}
+#app.on{display:grid;grid-template-columns:236px 1fr}
+#side{background:var(--panel);border-right:1px solid var(--line);padding:26px 0;
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+#side-head{padding:0 22px 24px;border-bottom:1px solid var(--line);margin-bottom:18px}
+#side-head img{height:34px;margin-bottom:12px}
+#side-head .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--faint);
+  word-break:break-all;line-height:1.6}
+.tab{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  padding:11px 22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);text-align:left;transition:color .18s,background-color .18s}
+.tab:hover{color:var(--text);background:rgba(243,239,231,.03)}
+.tab.on{color:var(--text);background:rgba(77,124,255,.11);box-shadow:inset 2px 0 0 var(--accent)}
+.tab .count{font-size:9.5px;color:var(--faint)}
+.tab.dirty::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--warn);flex-shrink:0}
+#side-foot{margin-top:auto;padding:20px 22px 0;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+#side-foot a,#side-foot button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+#side-foot a:hover,#side-foot button:hover{color:var(--text)}
+
+#main{padding:38px 44px 120px;max-width:920px}
+.panel{display:none}
+.panel.on{display:block}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;
+  padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.panel-head h2{font-family:var(--sans);font-size:29px;font-weight:700;letter-spacing:-.028em}
+.panel-head p{color:var(--dim);font-size:13.5px;margin-top:7px;max-width:520px;line-height:1.6}
+.save-wrap{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.btn-save{background:var(--text);color:var(--bg);padding:12px 24px;border-radius:999px;
+  font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+.btn-save:disabled{opacity:.4;cursor:default}
+.save-note{font-family:var(--mono);font-size:10px;letter-spacing:.1em;white-space:nowrap}
+
+.block{margin-bottom:40px}
+.block-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.field{margin-bottom:20px}
+.field > label,.field > .flabel{display:block;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.field input[type=text],.field textarea,.field select{width:100%;background:var(--field);
+  border:1px solid var(--line2);border-radius:8px;padding:11px 13px;font-size:14.5px;
+  line-height:1.55;outline:none;transition:border-color .18s}
+.field input[type=text]:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:82px}
+.field select{font-family:var(--mono);font-size:12px;cursor:pointer}
+.hint{font-size:12px;color:var(--faint);margin-top:7px;line-height:1.55;font-style:italic}
+
+/* repeater items */
+.item{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:20px 22px;margin-bottom:14px}
+.item-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.item-n{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin-right:auto}
+.ibtn{font-size:11px;letter-spacing:.1em;color:var(--dim);border:1px solid var(--line2);
+  border-radius:7px;padding:6px 10px;line-height:1;transition:border-color .18s,color .18s}
+.ibtn:hover{color:var(--text);border-color:var(--line2)}
+.ibtn.del:hover{color:var(--bad);border-color:var(--bad)}
+.ibtn:disabled{opacity:.28;cursor:default}
+.btn-add{width:100%;border:1px dashed var(--line2);border-radius:11px;padding:15px;
+  font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+  transition:border-color .18s,color .18s}
+.btn-add:hover{border-color:var(--accent);color:var(--accent)}
+.empty{padding:34px;text-align:center;border:1px dashed var(--line);border-radius:11px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:14px}
+
+/* file picker */
+.filerow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filerow .prev{width:52px;height:70px;border-radius:6px;object-fit:cover;
+  background:var(--field);border:1px solid var(--line2);flex-shrink:0}
+.filerow .path{flex:1;min-width:180px;font-family:var(--mono);font-size:10px;color:var(--dim);
+  word-break:break-all;line-height:1.6}
+.pick{border:1px solid var(--line2);border-radius:7px;padding:9px 14px;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--text);transition:border-color .18s}
+.pick:hover{border-color:var(--accent)}
+.filerow input[type=file]{display:none}
+
+/* media library */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px}
+.media-cell{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;display:flex;flex-direction:column}
+.media-cell .thumb{aspect-ratio:1;background:var(--field);display:flex;align-items:center;
+  justify-content:center;overflow:hidden}
+.media-cell .thumb img,.media-cell .thumb video{width:100%;height:100%;object-fit:cover}
+.media-cell .thumb .ext{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--faint)}
+.media-cell .info{padding:10px 11px;font-family:var(--mono);font-size:9px;color:var(--dim);
+  word-break:break-all;line-height:1.6;flex:1}
+.media-cell .acts{display:flex;border-top:1px solid var(--line)}
+.media-cell .acts button{flex:1;padding:9px;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim)}
+.media-cell .acts button:hover{color:var(--text);background:rgba(243,239,231,.04)}
+.media-cell .acts button.del:hover{color:var(--bad)}
+.media-cell .acts button+button{border-left:1px solid var(--line)}
+
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(140%);
+  background:var(--card);border:1px solid var(--line2);border-radius:10px;
+  padding:14px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  z-index:500;transition:transform .32s cubic-bezier(.2,.7,.2,1);max-width:min(560px,90vw);
+  box-shadow:0 20px 50px -14px rgba(0,0,0,.7);line-height:1.6}
+#toast.up{transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:rgba(126,231,160,.5)} #toast.ok::before{content:'✓  ';color:var(--ok)}
+#toast.bad{border-color:rgba(255,107,107,.5)} #toast.bad::before{content:'!  ';color:var(--bad)}
+
+#setup{max-width:660px;margin:14vh auto;padding:0 28px;display:none}
+#setup h1{font-family:var(--sans);font-size:31px;font-weight:700;letter-spacing:-.03em;margin-bottom:16px}
+#setup p{color:var(--sub);line-height:1.7;margin-bottom:14px}
+#setup code{font-family:var(--mono);font-size:12.5px;background:var(--card);
+  border:1px solid var(--line);border-radius:5px;padding:2px 7px;color:var(--accent)}
+#setup ol{margin:20px 0 0 20px;color:var(--sub);line-height:1.9}
+
+@media(max-width:860px){
+  #app.on{grid-template-columns:1fr}
+  #side{position:static;height:auto;flex-direction:column}
+  #main{padding:28px 20px 100px}
+  .panel-head{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NOT CONFIGURED ══════════════════════════════════════════ -->
+<div id="setup">
+  <h1>Almost there.</h1>
+  <p>This dashboard needs your Supabase project before it can do anything.</p>
+  <ol>
+    <li>Create a free project at <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>.</li>
+    <li>Open <strong>SQL Editor</strong>, paste in the contents of <code>schema.sql</code>, and run it.</li>
+    <li>Go to <strong>Authentication → Users → Add user</strong> and create your own admin login.</li>
+    <li>Go to <strong>Authentication → Sign In / Providers</strong> and turn <strong>off</strong> new sign-ups.</li>
+    <li>Copy <strong>Project URL</strong> and the <strong>anon public</strong> key from
+        <strong>Project Settings → API</strong> into <code>config.js</code>.</li>
+  </ol>
+</div>
+
+<!-- ══ LOGIN ═══════════════════════════════════════════════════ -->
+<div id="gate" style="display:none">
+  <div id="gate-box">
+    <h1>Site admin</h1>
+    <p class="lede">Sign in to edit the portfolio.</p>
+    <form id="gate-form">
+      <div class="gate-field">
+        <label for="g-email">Email</label>
+        <input id="g-email" type="email" autocomplete="username" required>
+      </div>
+      <div class="gate-field">
+        <label for="g-pass">Password</label>
+        <input id="g-pass" type="password" autocomplete="current-password" required>
+      </div>
+      <button id="gate-submit" type="submit">Sign in</button>
+      <p id="gate-msg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ═══════════════════════════════════════════════ -->
+<div id="app">
+  <aside id="side">
+    <div id="side-head">
+      <img src="uploads/signature.png" alt="">
+      <div class="who" id="who"></div>
+    </div>
+    <nav id="tabs"></nav>
+    <div id="side-foot">
+      <a href="index.html" target="_blank" rel="noopener">View site ↗</a>
+      <button id="reload">Reload from database</button>
+      <button id="signout">Sign out</button>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ═══ SEED CONTENT ══════════════════════════════════════════════
+     Mirrors the DEFAULTS block in index.html. Used only to pre-fill the
+     forms the first time, before anything has been saved. Once you save,
+     the database is the only source of truth. */
+  var SEED = {
+    hero: {
+      role: 'Full-Stack Developer · Dhaka',
+      name: 'Sakibun<br>Noor',
+      desc: 'I build web applications for small teams in the UK and US. React on the front, Laravel or Node behind it. Freelancing since 2019, a little over a hundred projects in.'
+    },
+    bio: {
+      intro: 'Most of my work has been the unglamorous kind. Admin panels, checkout flows, the dashboard someone stares at for eight hours a day. I have come to prefer it.',
+      heading: 'Sakibun Noor',
+      subhead: 'Full-Stack Developer',
+      paras: [
+        'I have been freelancing since 2019 and have held Top-Rated status on Upwork since 2021. Most of that work came from small teams in the UK and US who needed one developer rather than three.',
+        'For two years at SMS Solutions I led a team of four and we released twelve products. Much of what I contributed was not code. It was reviewing architecture before anyone opened an editor, and sitting with the juniors while they found their own bugs.',
+        'I work best with the whole thing in front of me. Writing the schema, building the interface, and being the one who answers for it when a page takes four seconds to load.'
+      ]
+    },
+    timeline: [
+      { year: "'19", text: 'First freelance work on Upwork and Fiverr' },
+      { year: "'21", text: 'Top-Rated on Upwork' },
+      { year: "'22", text: 'Senior Web Developer at SMS Solutions' },
+      { year: "'23", text: 'Started Computer Science at North South University' },
+      { year: "'26", text: 'Open to senior roles and contract work' }
+    ],
+    vitals: [
+      { title: 'Full-Stack Developer',   sub: 'Freelance · Upwork, Fiverr, Freelancer' },
+      { title: 'Senior Web Developer',   sub: 'SMS Solutions · 2022–2023' },
+      { title: 'B.Sc. Computer Science', sub: 'North South University · in progress' },
+      { title: 'Uttara, Dhaka',          sub: 'Bangladesh · GMT+6' }
+    ],
+    approach: {
+      heading: 'How the work<br><em>actually</em> goes.',
+      sub: 'Two habits that have survived every project I have taken on.',
+      cards: [
+        { num: 'A.01', title: 'Draw it first', img: 'uploads/planning-arch.webp',
+          body: 'I sketch the data model and the API surface before writing anything real. It costs a week at the start and saves a month later. The bugs that never happened were prevented here, on paper, where they cost nothing.' },
+        { num: 'A.02', title: 'Ship it early', img: 'uploads/planning-ship.webp',
+          body: 'I put work in front of real users before it is finished and watch what they actually do with it. It is usually humbling. It also means I am correcting course in week two rather than month four.' }
+      ]
+    },
+    portfolio: { heading: 'Selected <em>work</em>.', stats: ['100+ projects', 'Since 2019'] },
+    projects: [
+      { idx: '01', title: 'E-Commerce Platform', img: '', link: '',
+        tags: ['Laravel', 'React', 'Stripe', 'SSLCommerz'],
+        body: 'A storefront with a custom checkout and two payment gateways, plus an admin side for orders and stock. The front end loads in under two seconds on a mid-range phone.' },
+      { idx: '02', title: 'SaaS Dashboard', img: '', link: '',
+        tags: ['Node.js', 'React', 'REST API'],
+        body: 'An admin panel for a UK software product with a few hundred accounts on it. Role-based access, audit logging, webhooks, and an API their mobile app reads from.' },
+      { idx: '03', title: 'WordPress Build', img: '', link: '',
+        tags: ['WordPress', 'Custom theme', 'ACF', 'SEO'],
+        body: 'A theme written by hand rather than bought, with custom editor blocks and structured data. Every page came out green in Lighthouse.' },
+      { idx: '04', title: 'Jewellery Store', img: '', link: '',
+        tags: ['React', 'Node.js', 'MySQL'],
+        body: 'A catalogue with filtering and a wishlist, a checkout, and an admin area the owner uses to manage stock without calling me.' }
+    ],
+    reelsMeta: {
+      heading: 'Short <em>form</em>.',
+      sub: 'Process clips and build walkthroughs, mostly made for clients to post. Shot and cut by me.'
+    },
+    reels: [],
+    skills: [
+      { label: 'Front-end', items: [ { name: 'React.js', years: '5y' }, { name: 'JavaScript', years: '6y' }, { name: 'HTML & CSS', years: '6y' }, { name: 'Tailwind CSS', years: '3y' } ] },
+      { label: 'Back-end',  items: [ { name: 'PHP', years: '5y' }, { name: 'Laravel', years: '4y' }, { name: 'Node.js', years: '3y' }, { name: 'REST APIs', years: '5y' } ] },
+      { label: 'Data & CMS', items: [ { name: 'MySQL', years: '5y' }, { name: 'WordPress', years: '5y' }, { name: 'Custom themes', years: '4y' }, { name: 'Payments', years: '4y' } ] },
+      { label: 'Tooling',   items: [ { name: 'Git', years: '6y' }, { name: 'Vercel', years: '3y' }, { name: 'Figma', years: '4y' }, { name: 'Agile', years: '3y' } ] }
+    ],
+    contact: {
+      heading: 'Say <em>hello</em>.',
+      desc: 'I am open to senior roles and contract work. I read everything that comes in and usually reply the same day. Based in Dhaka, used to working across time zones.'
+    }
+  };
+
+  var EM_HINT = 'Wrap a word in &lt;em&gt; … &lt;/em&gt; to set it in blue italics. &lt;br&gt; forces a line break.';
+
+  /* ═══ PANEL DEFINITIONS ═════════════════════════════════════════ */
+  var PANELS = [
+    { id: 'reels', tab: 'Reels', title: 'Reels',
+      desc: 'Client engagement clips. Upload your own file, or paste a link to one already on Instagram, YouTube, TikTok, Vimeo or Facebook.',
+      countOf: 'reels',
+      blocks: [
+        { label: 'Section text', path: 'reelsMeta', fields: [
+          { k: 'heading', label: 'Heading', type: 'text', hint: EM_HINT },
+          { k: 'sub', label: 'Sub-line', type: 'textarea' } ] },
+        { label: 'Reels', path: 'reels', array: true, itemName: 'Reel',
+          titleKey: 'title',
+          blank: { title: '', client: '', kind: 'upload', src: '', url: '', poster: '' },
+          fields: [
+            { k: 'title', label: 'Title', type: 'text' },
+            { k: 'client', label: 'Client or label', type: 'text', hint: 'Small blue line above the title. Leave empty to hide it.' },
+            { k: 'kind', label: 'Source', type: 'select', reflow: true,
+              options: [ ['upload', 'Upload a video file'], ['embed', 'Link to an existing post'] ] },
+            { k: 'src', label: 'Video file', type: 'file', accept: 'video/*', when: ['kind', 'upload'],
+              hint: 'MP4 or WebM. A cover image is captured automatically from the video.' },
+            { k: 'url', label: 'Link to the post', type: 'text', when: ['kind', 'embed'],
+              hint: 'Paste the normal share link, e.g. instagram.com/reel/…' },
+            { k: 'poster', label: 'Cover image', type: 'file', accept: 'image/*',
+              hint: 'Shown in the grid. Portrait, ideally 1080×1920. Required for linked posts.' } ] }
+      ] },
+
+    { id: 'work', tab: 'Work', title: 'Selected work',
+      desc: 'The project cards. Leave the link empty and the card simply will not show a button.',
+      countOf: 'projects',
+      blocks: [
+        { label: 'Section text', path: 'portfolio', fields: [
+          { k: 'heading', label: 'Heading', type: 'text', hint: EM_HINT },
+          { k: 'stats', label: 'Stats, one per line', type: 'lines' } ] },
+        { label: 'Projects', path: 'projects', array: true, itemName: 'Project',
+          titleKey: 'title',
+          blank: { idx: '', title: '', img: '', link: '', tags: [], body: '' },
+          fields: [
+            { k: 'idx', label: 'Number', type: 'text', hint: 'Shown large when there is no image, e.g. 05.' },
+            { k: 'title', label: 'Title', type: 'text' },
+            { k: 'body', label: 'Description', type: 'textarea' },
+            { k: 'tags', label: 'Tags', type: 'csv', hint: 'Separated by commas.' },
+            { k: 'img', label: 'Screenshot', type: 'file', accept: 'image/*', hint: 'Landscape, around 1600×1000.' },
+            { k: 'link', label: 'Live link', type: 'text', hint: 'Optional. Full https:// address.' } ] }
+      ] },
+
+    { id: 'approach', tab: 'Approach', title: 'Approach',
+      desc: 'The two cards explaining how you work.',
+      blocks: [
+        { label: 'Section text', path: 'approach', fields: [
+          { k: 'heading', label: 'Heading', type: 'text', hint: EM_HINT },
+          { k: 'sub', label: 'Sub-line', type: 'textarea' } ] },
+        { label: 'Cards', path: 'approach.cards', array: true, itemName: 'Card',
+          titleKey: 'title',
+          blank: { num: '', title: '', img: '', body: '' },
+          fields: [
+            { k: 'num', label: 'Label', type: 'text', hint: 'e.g. A.03' },
+            { k: 'title', label: 'Title', type: 'text' },
+            { k: 'body', label: 'Body', type: 'textarea' },
+            { k: 'img', label: 'Image', type: 'file', accept: 'image/*', hint: 'Landscape 4:3.' } ] }
+      ] },
+
+    { id: 'background', tab: 'Background', title: 'Background',
+      desc: 'Your bio, the short timeline, and the vitals list beside the photo.',
+      blocks: [
+        { label: 'Bio', path: 'bio', fields: [
+          { k: 'intro', label: 'Opening line (italic)', type: 'textarea' },
+          { k: 'heading', label: 'Name heading', type: 'text' },
+          { k: 'subhead', label: 'Role under the name', type: 'text' },
+          { k: 'paras', label: 'Paragraphs', type: 'lines',
+            hint: 'One paragraph per line. Blank lines are ignored.' } ] },
+        { label: 'Timeline', path: 'timeline', array: true, itemName: 'Entry', titleKey: 'text',
+          blank: { year: '', text: '' },
+          fields: [
+            { k: 'year', label: 'Year', type: 'text', hint: "e.g. '24" },
+            { k: 'text', label: 'What happened', type: 'text' } ] },
+        { label: 'Vitals', path: 'vitals', array: true, itemName: 'Vital', titleKey: 'title',
+          blank: { title: '', sub: '' },
+          fields: [
+            { k: 'title', label: 'Title', type: 'text' },
+            { k: 'sub', label: 'Detail line', type: 'text' } ] }
+      ] },
+
+    { id: 'toolkit', tab: 'Toolkit', title: 'Toolkit',
+      desc: 'The four skill columns.',
+      countOf: 'skills',
+      blocks: [
+        { label: 'Groups', path: 'skills', array: true, itemName: 'Group', titleKey: 'label',
+          blank: { label: '', items: [] },
+          fields: [
+            { k: 'label', label: 'Column heading', type: 'text' },
+            { k: 'items', label: 'Skills', type: 'pairs',
+              hint: 'One per line as <code>Name | 5y</code>.' } ] }
+      ] },
+
+    { id: 'hero', tab: 'Hero', title: 'Hero',
+      desc: 'The first screen, over the video.',
+      blocks: [
+        { label: 'Hero', path: 'hero', fields: [
+          { k: 'role', label: 'Role line', type: 'text' },
+          { k: 'name', label: 'Name', type: 'text', hint: 'Use &lt;br&gt; to split across two lines.' },
+          { k: 'desc', label: 'Intro paragraph', type: 'textarea' } ] }
+      ] },
+
+    { id: 'contact', tab: 'Contact', title: 'Contact',
+      desc: 'The closing section.',
+      blocks: [
+        { label: 'Contact', path: 'contact', fields: [
+          { k: 'heading', label: 'Heading', type: 'text', hint: EM_HINT },
+          { k: 'desc', label: 'Paragraph', type: 'textarea' } ] }
+      ] },
+
+    { id: 'media', tab: 'Media', title: 'Media library', media: true,
+      desc: 'Every file you have uploaded. Deleting a file here will not remove it from a reel or project that still points at it.' }
+  ];
+
+  /* Which content keys each panel writes. */
+  function panelKeys(p) {
+    var keys = {};
+    (p.blocks || []).forEach(function (b) { keys[b.path.split('.')[0]] = true; });
+    return Object.keys(keys);
+  }
+
+  /* ═══ ELS + STATE ═══════════════════════════════════════════════ */
+  var $ = function (id) { return document.getElementById(id); };
+  var sb = null;
+  var state = {};                 // content key -> value
+  var dirty = {};                 // panel id -> true
+  var current = 'reels';
+
+  /* ═══ TOAST ═════════════════════════════════════════════════════ */
+  var toastT = null;
+  function toast(msg, kind) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.className = 'up ' + (kind || '');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { t.className = kind || ''; }, kind === 'bad' ? 6500 : 3200);
+  }
+
+  /* ═══ PATH HELPERS ══════════════════════════════════════════════ */
+  function getPath(obj, path) {
+    return path.split('.').reduce(function (o, k) {
+      return (o == null) ? undefined : o[k];
+    }, obj);
+  }
+  function setPath(obj, path, val) {
+    var parts = path.split('.');
+    var last = parts.pop();
+    var tgt = parts.reduce(function (o, k) {
+      if (o[k] == null) o[k] = /^\d+$/.test(k) ? [] : {};
+      return o[k];
+    }, obj);
+    tgt[last] = val;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ═══ FIELD SERIALISERS ═════════════════════════════════════════ */
+  function toInput(type, val) {
+    if (type === 'lines') return (val || []).join('\n');
+    if (type === 'csv')   return (val || []).join(', ');
+    if (type === 'pairs') return (val || []).map(function (i) {
+      return (i.name || '') + ' | ' + (i.years || '');
+    }).join('\n');
+    return val == null ? '' : String(val);
+  }
+  function fromInput(type, raw) {
+    if (type === 'lines') return raw.split('\n').map(function (s) { return s.trim(); })
+                                    .filter(Boolean);
+    if (type === 'csv')   return raw.split(',').map(function (s) { return s.trim(); })
+                                    .filter(Boolean);
+    if (type === 'pairs') return raw.split('\n').map(function (s) { return s.trim(); })
+      .filter(Boolean).map(function (line) {
+        var bits = line.split('|');
+        return { name: (bits[0] || '').trim(), years: (bits[1] || '').trim() };
+      });
+    return raw;
+  }
+
+  /* ═══ RENDER ════════════════════════════════════════════════════ */
+  function renderTabs() {
+    $('tabs').innerHTML = PANELS.map(function (p) {
+      var n = p.countOf && Array.isArray(state[p.countOf]) ? state[p.countOf].length : '';
+      return '<button class="tab' + (p.id === current ? ' on' : '') +
+             (dirty[p.id] ? ' dirty' : '') + '" data-tab="' + p.id + '">' +
+             '<span>' + esc(p.tab) + '</span>' +
+             (n !== '' ? '<span class="count">' + n + '</span>' : '') +
+             '</button>';
+    }).join('');
+    $('tabs').querySelectorAll('.tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        current = this.getAttribute('data-tab');
+        renderTabs(); renderMain();
+      });
+    });
+  }
+
+  function fieldHTML(f, path, val) {
+    var id = 'f_' + path.replace(/[^\w]/g, '_');
+    var h = '<div class="field">';
+    h += '<label for="' + id + '">' + esc(f.label) + '</label>';
+
+    if (f.type === 'select') {
+      h += '<select id="' + id + '" data-path="' + path + '" data-type="select"' +
+           (f.reflow ? ' data-reflow="1"' : '') + '>';
+      f.options.forEach(function (o) {
+        h += '<option value="' + esc(o[0]) + '"' + (String(val) === o[0] ? ' selected' : '') +
+             '>' + esc(o[1]) + '</option>';
+      });
+      h += '</select>';
+
+    } else if (f.type === 'file') {
+      var isVid = /\.(mp4|webm|mov|m4v)$/i.test(val || '');
+      h += '<div class="filerow">';
+      h += val
+        ? (isVid ? '<video class="prev" src="' + esc(val) + '" muted></video>'
+                 : '<img class="prev" src="' + esc(val) + '" alt="">')
+        : '<div class="prev"></div>';
+      h += '<div class="path">' + (val ? esc(val) : '<span style="opacity:.5">Nothing chosen</span>') + '</div>';
+      h += '<button type="button" class="pick" data-pick="' + path + '">' +
+           (val ? 'Replace' : 'Choose file') + '</button>';
+      if (val) h += '<button type="button" class="ibtn del" data-clear="' + path + '">Remove</button>';
+      h += '<input type="file" data-file="' + path + '"' +
+           (f.accept ? ' accept="' + esc(f.accept) + '"' : '') + '>';
+      h += '</div>';
+
+    } else if (f.type === 'textarea' || f.type === 'lines' || f.type === 'pairs') {
+      h += '<textarea id="' + id + '" data-path="' + path + '" data-type="' + f.type + '" rows="' +
+           (f.type === 'textarea' ? 4 : 5) + '">' + esc(toInput(f.type, val)) + '</textarea>';
+
+    } else {
+      h += '<input id="' + id + '" type="text" data-path="' + path + '" data-type="' +
+           (f.type || 'text') + '" value="' + esc(toInput(f.type, val)) + '">';
+    }
+
+    if (f.hint) h += '<p class="hint">' + f.hint + '</p>';
+    return h + '</div>';
+  }
+
+  function blockHTML(b) {
+    var h = '<div class="block"><div class="block-label">' + esc(b.label) + '</div>';
+
+    if (!b.array) {
+      b.fields.forEach(function (f) {
+        h += fieldHTML(f, b.path + '.' + f.k, getPath(state, b.path + '.' + f.k));
+      });
+      return h + '</div>';
+    }
+
+    var arr = getPath(state, b.path);
+    if (!Array.isArray(arr)) { arr = []; setPath(state, b.path, arr); }
+
+    if (!arr.length) {
+      h += '<div class="empty">No ' + esc(b.itemName.toLowerCase()) + 's yet</div>';
+    }
+
+    arr.forEach(function (item, i) {
+      var name = (b.titleKey && item[b.titleKey]) ? item[b.titleKey] : (b.itemName + ' ' + (i + 1));
+      h += '<div class="item">';
+      h += '<div class="item-bar">';
+      h += '<span class="item-n">' + esc(String(i + 1).padStart(2, '0')) + ' · ' + esc(name) + '</span>';
+      h += '<button type="button" class="ibtn" data-move="' + b.path + ':' + i + ':-1"' +
+           (i === 0 ? ' disabled' : '') + ' title="Move up">↑</button>';
+      h += '<button type="button" class="ibtn" data-move="' + b.path + ':' + i + ':1"' +
+           (i === arr.length - 1 ? ' disabled' : '') + ' title="Move down">↓</button>';
+      h += '<button type="button" class="ibtn del" data-del="' + b.path + ':' + i + '">Delete</button>';
+      h += '</div>';
+
+      b.fields.forEach(function (f) {
+        if (f.when && String(item[f.when[0]] || '') !== f.when[1]) return;
+        h += fieldHTML(f, b.path + '.' + i + '.' + f.k, item[f.k]);
+      });
+      h += '</div>';
+    });
+
+    h += '<button type="button" class="btn-add" data-add="' + b.path + '">' +
+         '+ Add ' + esc(b.itemName.toLowerCase()) + '</button>';
+    return h + '</div>';
+  }
+
+  function renderMain() {
+    var p = PANELS.filter(function (x) { return x.id === current; })[0];
+    var h = '<div class="panel on"><div class="panel-head"><div>' +
+            '<h2>' + esc(p.title) + '</h2>' +
+            (p.desc ? '<p>' + esc(p.desc) + '</p>' : '') + '</div>';
+
+    if (!p.media) {
+      h += '<div class="save-wrap">' +
+           '<span class="save-note" id="save-note"></span>' +
+           '<button class="btn-save" id="save-btn">Save changes</button></div>';
+    }
+    h += '</div>';
+
+    h += p.media ? '<div id="media-body"><div class="empty">Loading…</div></div>'
+                 : (p.blocks || []).map(blockHTML).join('');
+    h += '</div>';
+
+    $('main').innerHTML = h;
+    if (p.media) { loadMedia(); return; }
+
+    bindPanel(p);
+  }
+
+  function bindPanel(p) {
+    var main = $('main');
+
+    // text / textarea / select edits
+    main.querySelectorAll('[data-path]').forEach(function (inp) {
+      inp.addEventListener('input', function () {
+        setPath(state, this.getAttribute('data-path'),
+                fromInput(this.getAttribute('data-type'), this.value));
+        markDirty(p.id);
+      });
+      if (inp.tagName === 'SELECT') {
+        inp.addEventListener('change', function () {
+          setPath(state, this.getAttribute('data-path'), this.value);
+          markDirty(p.id);
+          if (this.getAttribute('data-reflow')) renderMain();
+        });
+      }
+    });
+
+    // add / delete / move
+    main.querySelectorAll('[data-add]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var path = this.getAttribute('data-add');
+        var blk = findBlock(p, path);
+        var arr = getPath(state, path) || [];
+        arr.push(JSON.parse(JSON.stringify(blk.blank)));
+        setPath(state, path, arr);
+        markDirty(p.id); renderMain(); renderTabs();
+      });
+    });
+    main.querySelectorAll('[data-del]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var bits = this.getAttribute('data-del').split(':');
+        var arr = getPath(state, bits[0]);
+        var label = arr[+bits[1]];
+        var nm = (label && (label.title || label.text || label.label)) || 'this entry';
+        if (!confirm('Delete “' + nm + '”?\n\nThis removes it from the page when you save. Any uploaded file stays in the media library.')) return;
+        arr.splice(+bits[1], 1);
+        markDirty(p.id); renderMain(); renderTabs();
+      });
+    });
+    main.querySelectorAll('[data-move]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var bits = this.getAttribute('data-move').split(':');
+        var arr = getPath(state, bits[0]);
+        var i = +bits[1], j = i + (+bits[2]);
+        if (j < 0 || j >= arr.length) return;
+        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        markDirty(p.id); renderMain();
+      });
+    });
+
+    // file pickers
+    main.querySelectorAll('[data-pick]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        main.querySelector('[data-file="' + this.getAttribute('data-pick') + '"]').click();
+      });
+    });
+    main.querySelectorAll('[data-clear]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        setPath(state, this.getAttribute('data-clear'), '');
+        markDirty(p.id); renderMain();
+      });
+    });
+    main.querySelectorAll('[data-file]').forEach(function (inp) {
+      inp.addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (file) handleUpload(file, this.getAttribute('data-file'), p);
+      });
+    });
+
+    var sbtn = $('save-btn');
+    if (sbtn) sbtn.addEventListener('click', function () { savePanel(p); });
+    updateSaveNote(p.id);
+  }
+
+  function findBlock(p, path) {
+    return (p.blocks || []).filter(function (b) { return b.path === path; })[0];
+  }
+  function markDirty(id) {
+    if (!dirty[id]) { dirty[id] = true; renderTabs(); }
+    updateSaveNote(id);
+  }
+  function updateSaveNote(id) {
+    var n = $('save-note');
+    if (!n) return;
+    n.textContent = dirty[id] ? 'Unsaved' : '';
+    n.style.color = dirty[id] ? 'var(--warn)' : 'var(--faint)';
+  }
+
+  /* ═══ UPLOADS ═══════════════════════════════════════════════════ */
+  function slug(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'file';
+  }
+
+  function upload(blob, filename) {
+    var name = Date.now() + '-' + filename;
+    return sb.storage.from('media')
+      .upload(name, blob, { cacheControl: '31536000', upsert: false, contentType: blob.type || undefined })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return sb.storage.from('media').getPublicUrl(name).data.publicUrl;
+      });
+  }
+
+  /* Grabs a frame from a video file so uploaded reels get a cover image
+     without the extra step. Failure here is never fatal. */
+  function grabFrame(file) {
+    return new Promise(function (resolve, reject) {
+      var v = document.createElement('video');
+      var url = URL.createObjectURL(file);
+      var done = false;
+      var bail = function (e) { if (!done) { done = true; URL.revokeObjectURL(url); reject(e); } };
+
+      v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url;
+      setTimeout(function () { bail(new Error('timeout')); }, 12000);
+      v.addEventListener('error', function () { bail(new Error('cannot decode')); });
+      v.addEventListener('loadeddata', function () {
+        try { v.currentTime = Math.min(0.6, (v.duration || 2) / 3); } catch (e) { bail(e); }
+      });
+      v.addEventListener('seeked', function () {
+        if (done) return;
+        try {
+          var w = Math.min(720, v.videoWidth || 720);
+          var h = Math.round((v.videoHeight || 1280) * w / (v.videoWidth || 720));
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          c.getContext('2d').drawImage(v, 0, 0, w, h);
+          c.toBlob(function (b) {
+            done = true; URL.revokeObjectURL(url);
+            b ? resolve(b) : reject(new Error('no frame'));
+          }, 'image/webp', 0.8);
+        } catch (e) { bail(e); }
+      });
+    });
+  }
+
+  function handleUpload(file, path, p) {
+    var mb = (file.size / 1048576).toFixed(1);
+    if (file.size > 52428800) {
+      toast('That file is ' + mb + ' MB. Supabase’s free tier caps uploads at 50 MB — compress the video first.', 'bad');
+      return;
+    }
+    toast('Uploading ' + file.name + ' (' + mb + ' MB)…');
+
+    var ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    var base = slug(file.name.replace(/\.[^.]+$/, ''));
+
+    upload(file, base + '.' + ext).then(function (url) {
+      setPath(state, path, url);
+      markDirty(p.id);
+
+      // For a reel video with no cover yet, derive one from the file.
+      var m = path.match(/^reels\.(\d+)\.src$/);
+      if (!m || (state.reels[+m[1]] || {}).poster) { renderMain(); toast('Uploaded.', 'ok'); return; }
+
+      var i = +m[1];
+      toast('Uploaded. Making a cover image…');
+      grabFrame(file)
+        .then(function (blob) { return upload(blob, base + '-cover.webp'); })
+        .then(function (purl) {
+          state.reels[i].poster = purl;
+          renderMain();
+          toast('Uploaded, with a cover image taken from the video.', 'ok');
+        })
+        .catch(function () {
+          renderMain();
+          toast('Uploaded. Could not read a frame for the cover — add one by hand.', 'ok');
+        });
+    }).catch(function (e) {
+      toast('Upload failed: ' + (e.message || e), 'bad');
+    });
+  }
+
+  /* ═══ MEDIA LIBRARY ═════════════════════════════════════════════ */
+  function loadMedia() {
+    sb.storage.from('media').list('', { limit: 300, sortBy: { column: 'created_at', order: 'desc' } })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        var files = (res.data || []).filter(function (f) { return f.id || f.metadata; });
+        var box = $('media-body');
+        if (!box) return;
+        if (!files.length) { box.innerHTML = '<div class="empty">Nothing uploaded yet</div>'; return; }
+
+        box.innerHTML = '<div class="media-grid">' + files.map(function (f) {
+          var url = sb.storage.from('media').getPublicUrl(f.name).data.publicUrl;
+          var kb = f.metadata && f.metadata.size ? Math.round(f.metadata.size / 1024) : 0;
+          var isImg = /\.(png|jpe?g|webp|gif|avif|svg)$/i.test(f.name);
+          var isVid = /\.(mp4|webm|mov|m4v)$/i.test(f.name);
+          var thumb = isImg ? '<img src="' + esc(url) + '" alt="" loading="lazy">'
+                    : isVid ? '<video src="' + esc(url) + '" muted preload="metadata"></video>'
+                    : '<span class="ext">' + esc((f.name.split('.').pop() || '?').toUpperCase()) + '</span>';
+          return '<div class="media-cell">' +
+            '<div class="thumb">' + thumb + '</div>' +
+            '<div class="info">' + esc(f.name) + '<br>' +
+              (kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB') + '</div>' +
+            '<div class="acts">' +
+              '<button data-copy="' + esc(url) + '">Copy URL</button>' +
+              '<button class="del" data-rm="' + esc(f.name) + '">Delete</button>' +
+            '</div></div>';
+        }).join('') + '</div>';
+
+        box.querySelectorAll('[data-copy]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            navigator.clipboard.writeText(this.getAttribute('data-copy'))
+              .then(function () { toast('URL copied.', 'ok'); })
+              .catch(function () { toast('Could not copy.', 'bad'); });
+          });
+        });
+        box.querySelectorAll('[data-rm]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var name = this.getAttribute('data-rm');
+            if (!confirm('Permanently delete ' + name + ' from storage?\n\nAnything still pointing at this file will show a broken image.')) return;
+            sb.storage.from('media').remove([name]).then(function (r) {
+              if (r.error) throw r.error;
+              toast('Deleted ' + name, 'ok'); loadMedia();
+            }).catch(function (e) { toast('Delete failed: ' + (e.message || e), 'bad'); });
+          });
+        });
+      })
+      .catch(function (e) {
+        var box = $('media-body');
+        if (box) box.innerHTML = '<div class="empty">Could not list files: ' + esc(e.message || e) + '</div>';
+      });
+  }
+
+  /* ═══ LOAD / SAVE ═══════════════════════════════════════════════ */
+  function loadContent() {
+    return sb.from('content').select('key,value').then(function (res) {
+      if (res.error) throw res.error;
+      state = JSON.parse(JSON.stringify(SEED));
+      var seeded = [];
+      (res.data || []).forEach(function (row) {
+        if (row.value != null) { state[row.key] = row.value; seeded.push(row.key); }
+      });
+      dirty = {};
+      renderTabs(); renderMain();
+      if (!seeded.length) {
+        toast('Nothing saved yet — forms are pre-filled with what the site currently shows. Press Save on a section to store it.', 'ok');
+      }
+    });
+  }
+
+  function savePanel(p) {
+    var keys = panelKeys(p);
+    var btn = $('save-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+    var rows = keys.map(function (k) {
+      return { key: k, value: state[k] === undefined ? null : state[k],
+               updated_at: new Date().toISOString() };
+    }).filter(function (r) { return r.value !== null; });
+
+    sb.from('content').upsert(rows, { onConflict: 'key' }).then(function (res) {
+      if (res.error) throw res.error;
+      dirty[p.id] = false;
+      renderTabs(); updateSaveNote(p.id);
+      toast('Saved. Refresh the site to see it.', 'ok');
+    }).catch(function (e) {
+      toast('Save failed: ' + (e.message || e), 'bad');
+    }).then(function () {
+      if (btn) { btn.disabled = false; btn.textContent = 'Save changes'; }
+    });
+  }
+
+  /* ═══ AUTH ══════════════════════════════════════════════════════ */
+  function showApp(session) {
+    $('gate').style.display = 'none';
+    $('app').classList.add('on');
+    $('who').textContent = session.user.email;
+    loadContent().catch(function (e) {
+      toast('Could not load content: ' + (e.message || e) +
+            '  — did schema.sql run?', 'bad');
+    });
+  }
+
+  function showGate(msg, kind) {
+    $('app').classList.remove('on');
+    $('gate').style.display = 'flex';
+    if (msg) {
+      var m = $('gate-msg');
+      m.textContent = msg;
+      m.style.color = kind === 'bad' ? 'var(--bad)' : 'var(--dim)';
+    }
+  }
+
+  function initAuth() {
+    $('gate-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = $('gate-submit');
+      var msg = $('gate-msg');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      msg.textContent = ''; msg.style.color = 'var(--dim)';
+
+      sb.auth.signInWithPassword({
+        email: $('g-email').value.trim(),
+        password: $('g-pass').value
+      }).then(function (res) {
+        if (res.error) throw res.error;
+        $('g-pass').value = '';
+        showApp(res.data.session);
+      }).catch(function (err) {
+        msg.textContent = /Invalid login/i.test(err.message || '')
+          ? 'That email and password combination was not accepted. Check the user exists under Authentication → Users.'
+          : (err.message || 'Sign-in failed.');
+        msg.style.color = 'var(--bad)';
+      }).then(function () {
+        btn.disabled = false; btn.textContent = 'Sign in';
+      });
+    });
+
+    $('signout').addEventListener('click', function () {
+      var unsaved = Object.keys(dirty).filter(function (k) { return dirty[k]; });
+      if (unsaved.length && !confirm('You have unsaved changes. Sign out anyway?')) return;
+      sb.auth.signOut().then(function () { dirty = {}; showGate('Signed out.'); });
+    });
+
+    $('reload').addEventListener('click', function () {
+      var unsaved = Object.keys(dirty).filter(function (k) { return dirty[k]; });
+      if (unsaved.length && !confirm('Discard unsaved changes and reload from the database?')) return;
+      loadContent().then(function () { toast('Reloaded.', 'ok'); })
+                   .catch(function (e) { toast('Reload failed: ' + (e.message || e), 'bad'); });
+    });
+
+    sb.auth.getSession().then(function (res) {
+      if (res.data && res.data.session) showApp(res.data.session);
+      else showGate();
+    });
+  }
+
+  /* ═══ BOOT ══════════════════════════════════════════════════════ */
+  var cfg = window.SB;
+  if (!cfg || !cfg.url || !cfg.anon || /YOUR_/.test(cfg.url + cfg.anon)) {
+    $('setup').style.display = 'block';
+  } else if (typeof window.supabase === 'undefined') {
+    $('setup').style.display = 'block';
+    $('setup').innerHTML = '<h1>Offline.</h1><p>The Supabase library could not load. ' +
+      'Check your internet connection and reload.</p>';
+  } else {
+    sb = window.supabase.createClient(cfg.url, cfg.anon);
+    initAuth();
+  }
+
+  window.addEventListener('beforeunload', function (e) {
+    if (Object.keys(dirty).some(function (k) { return dirty[k]; })) {
+      e.preventDefault(); e.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>

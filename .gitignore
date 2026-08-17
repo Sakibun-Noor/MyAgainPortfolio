@@ -1,0 +1,8 @@
+# Local backups of pre-optimisation source media
+uploads/_original/
+
+# Scratch test pages
+_*.html
+
+.DS_Store
+Thumbs.db
