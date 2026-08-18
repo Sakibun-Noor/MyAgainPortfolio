@@ -102,11 +102,6 @@ body {
   font-size: 10.5px; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--text-dim);
 }
-.hdr-avail { display: flex; align-items: center; gap: 8px; }
-.avail-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #7ee7a0; box-shadow: 0 0 8px #7ee7a0;
-}
 
 /* ─── SIDE NAV ───────────────────────────────────────────────────── */
 #side-nav {
@@ -281,8 +276,8 @@ body {
 .timeline-text { font-size: 15px; color: var(--text-sub); }
 .bg-sidebar { position: sticky; top: 108px; }
 .portrait-img {
-  width: 100%; max-width: 400px;
-  aspect-ratio: 3/4; object-fit: cover; object-position: center top;
+  width: 100%; max-width: 400px; height: auto;
+  aspect-ratio: 9/16; object-fit: cover; object-position: center;
   margin-bottom: 32px;
   filter: grayscale(0.12) contrast(1.04);
 }
@@ -677,7 +672,6 @@ a.cc-value:hover { color: var(--accent); }
 @media (max-width: 768px) {
   #site-header { padding: 16px 20px; }
   .hdr-right { gap: 12px; }
-  .hdr-avail { display: none; }
   #mob-menu-btn { display: flex; }
   #mob-nav { display: block; }
   #side-nav, #scroll-rail { display: none; }
@@ -733,7 +727,6 @@ a.cc-value:hover { color: var(--accent); }
     <img id="hdr-signature" src="uploads/signature.png" alt="Sakibun Noor" width="246" height="120">
   </a>
   <div class="hdr-right">
-    <span class="hdr-avail"><span class="avail-dot"></span> Open to work</span>
     <button id="mob-menu-btn" aria-label="Open menu"><span></span><span></span></button>
   </div>
 </header>
@@ -749,10 +742,10 @@ a.cc-value:hover { color: var(--accent); }
   <div class="hero-scrim hero-scrim-2"></div>
 
   <div id="hero-content">
-    <p id="hero-role">Full-Stack Developer · Dhaka</p>
+    <p id="hero-role">Full-Stack Developer</p>
     <h1 id="hero-name">Sakibun<br>Noor</h1>
-    <p id="hero-desc">I build web applications for small teams in the UK and US. React on the front, Laravel or Node behind it. Freelancing since 2019, a little over a hundred projects in.</p>
-    <button class="btn-primary js-to-contact">Get in touch <span class="arrow">→</span></button>
+    <p id="hero-desc">I build software that businesses actually run on. From full-stack web apps to purpose-built engines, I design and develop systems around how your business actually works. Ten-plus years of tooling across Python, React, JavaScript and C, delivered for companies operating at multinational scale.</p>
+    <button class="btn-primary js-to-contact">Let’s talk <span class="arrow">→</span></button>
   </div>
 
   <div id="hero-scroll-hint" aria-hidden="true">
@@ -780,14 +773,14 @@ a.cc-value:hover { color: var(--accent); }
         <div id="timeline"></div>
 
         <button class="btn-primary js-to-contact" style="margin-top:44px;">
-          Get in touch <span class="arrow">→</span>
+          Let’s talk <span class="arrow">→</span>
         </button>
       </div>
     </div>
 
     <div class="bg-sidebar" data-reveal>
       <img class="portrait-img" src="uploads/sakib-portrait.webp" alt="Sakibun Noor"
-        width="900" height="1200" loading="lazy" decoding="async">
+        width="720" height="1280" loading="lazy" decoding="async">
       <p class="vitals-label">Vitals</p>
       <div id="vitals"></div>
     </div>
@@ -898,7 +891,7 @@ a.cc-value:hover { color: var(--accent); }
   </div>
 
   <footer id="site-footer">
-    <span>© Sakibun Noor 2026</span>
+    <span>© Sakibun Noor 2020</span>
     <span>Hand-coded in Dhaka</span>
     <span>v3 · <span id="footer-clock"></span></span>
   </footer>
@@ -931,9 +924,9 @@ a.cc-value:hover { color: var(--accent); }
      If Supabase has saved content, it replaces these after load. */
   var DEFAULTS = {
     hero: {
-      role: 'Full-Stack Developer · Dhaka',
+      role: 'Full-Stack Developer',
       name: 'Sakibun<br>Noor',
-      desc: 'I build web applications for small teams in the UK and US. React on the front, Laravel or Node behind it. Freelancing since 2019, a little over a hundred projects in.'
+      desc: 'I build software that businesses actually run on. From full-stack web apps to purpose-built engines, I design and develop systems around how your business actually works. Ten-plus years of tooling across Python, React, JavaScript and C, delivered for companies operating at multinational scale.'
     },
 
     bio: {
@@ -1016,11 +1009,13 @@ a.cc-value:hover { color: var(--accent); }
 
     skills: [
       { label: 'Front-end', items: [
-        { name: 'React.js', years: '5y' }, { name: 'JavaScript', years: '6y' },
-        { name: 'HTML & CSS', years: '6y' }, { name: 'Tailwind CSS', years: '3y' } ]},
+        { name: 'React.js', years: '5y' }, { name: 'Next.js', years: '3y' },
+        { name: 'JavaScript', years: '6y' }, { name: 'HTML & CSS', years: '6y' },
+        { name: 'Tailwind CSS', years: '3y' } ]},
       { label: 'Back-end', items: [
-        { name: 'PHP', years: '5y' }, { name: 'Laravel', years: '4y' },
-        { name: 'Node.js', years: '3y' }, { name: 'REST APIs', years: '5y' } ]},
+        { name: 'Python', years: '5y' }, { name: 'PHP', years: '5y' },
+        { name: 'Laravel', years: '4y' }, { name: 'Node.js', years: '3y' },
+        { name: 'REST APIs', years: '5y' } ]},
       { label: 'Data & CMS', items: [
         { name: 'MySQL', years: '5y' }, { name: 'WordPress', years: '5y' },
         { name: 'Custom themes', years: '4y' }, { name: 'Payments', years: '4y' } ]},
